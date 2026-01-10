@@ -1,8 +1,8 @@
 "use server";
 
-import { parseWithZod } from "@conform-to/zod/v3";
 import type { SubmissionResult } from "@conform-to/react";
-import { userFormSchema, type UserFormData } from "./schema";
+import { parseWithZod } from "@conform-to/zod/v3";
+import { type UserFormData, userFormSchema } from "./schema";
 
 // Server Actionの戻り値の型
 export type FormActionResult =
@@ -12,7 +12,7 @@ export type FormActionResult =
 // Server Action
 export async function submitUserForm(
   _prevState: FormActionResult | undefined,
-  formData: FormData,
+  formData: FormData
 ): Promise<FormActionResult> {
   // conformを使ってフォームデータをパース
   const submission = parseWithZod(formData, {

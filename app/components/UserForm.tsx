@@ -1,10 +1,10 @@
 "use client";
 
-import { useActionState } from "react";
-import { useForm, getInputProps } from "@conform-to/react";
+import { getInputProps, useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod/v3";
+import { useActionState } from "react";
 import { submitUserForm } from "../actions";
-import { userFormSchema } from"../schema";
+import { userFormSchema } from "../schema";
 
 export function UserForm() {
   // 性別の選択肢
@@ -15,7 +15,7 @@ export function UserForm() {
   ];
   const [lastResult, formAction, isPending] = useActionState(
     submitUserForm,
-    undefined,
+    undefined
   );
 
   const [form, fields] = useForm({
