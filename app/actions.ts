@@ -12,7 +12,7 @@ export type FormActionResult =
 // Server Action
 export async function submitUserForm(
   _prevState: FormActionResult | undefined,
-  formData: FormData
+  formData: FormData,
 ): Promise<FormActionResult> {
   // conformを使ってフォームデータをパース
   const submission = parseWithZod(formData, {
