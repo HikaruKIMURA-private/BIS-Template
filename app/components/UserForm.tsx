@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { getInputProps, useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod/v3";
 import { useActionState } from "react";
@@ -171,13 +172,13 @@ export function UserForm() {
         )}
 
         {/* 送信ボタン */}
-        <button
+        <Button
           type="submit"
           disabled={isPending}
           className="w-full rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600"
         >
           {isPending ? "送信中..." : "登録"}
-        </button>
+        </Button>
       </form>
     </div>
   );
