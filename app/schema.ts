@@ -1,23 +1,21 @@
 import { z } from "zod";
 
-// フォームのバリデーションスキーマ
-export const userFormSchema = z.object({
+// プロフィールフォームのバリデーションスキーマ
+export const profileFormSchema = z.object({
   name: z
     .string({ required_error: "名前は必須です" })
     .min(1, "名前は必須です")
     .max(50, "名前は50文字以内で入力してください"),
-  email: z
-    .string({ required_error: "メールアドレスは必須です" })
-    .min(1, "メールアドレスは必須です")
-    .email("有効なメールアドレスを入力してください"),
-  gender: z.enum(["male", "female", "other"], {
+  gender: z.enum(["male", "female"], {
     required_error: "性別を選択してください",
   }),
-  terms: z
-    .boolean({ required_error: "利用規約への同意が必要です" })
-    .refine((val) => val === true, {
-      message: "利用規約への同意が必要です",
+  birthDate: z
+    .string({ required_error: "生年月日は必須です" })
+    .min(1, "生年月日は必須です")
+    .refine((val) => !isNaN(Date.parse(val)), {
+      message: "有効な日付を入力してください",
     }),
+  note: z.string().max(500, "備考は500文字以内で入力してください").optional(),
 });
 
-export type UserFormData = z.infer<typeof userFormSchema>;
+export type ProfileFormData = z.infer<typeof profileFormSchema>;

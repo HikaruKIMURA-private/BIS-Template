@@ -31,29 +31,10 @@ export const Default: Story = {};
 export const NameError: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const submitButton = canvas.getByRole("button", { name: /登録/i });
+    const submitButton = canvas.getByRole("button", { name: /保存/i });
     await userEvent.click(submitButton);
     // バリデーションエラーが表示されるのを待つ
     await expect(canvas.getByText(/名前は必須です/i)).toBeInTheDocument();
-  },
-};
-
-// メールアドレスのバリデーションエラー
-export const EmailError: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const nameInput = canvas.getByLabelText(/名前/i);
-    await userEvent.type(nameInput, "テストユーザー");
-    await userEvent.tab(); // フォーカスを外す
-
-    const emailInput = canvas.getByLabelText(/メールアドレス/i);
-    await userEvent.type(emailInput, "invalid-email");
-    await userEvent.tab(); // フォーカスを外してバリデーションをトリガー
-
-    // バリデーションエラーが表示されるのを待つ
-    await expect(
-      canvas.getByText(/有効なメールアドレスを入力してください/i)
-    ).toBeInTheDocument();
   },
 };
 
@@ -65,12 +46,8 @@ export const GenderError: Story = {
     await userEvent.type(nameInput, "テストユーザー");
     await userEvent.tab();
 
-    const emailInput = canvas.getByLabelText(/メールアドレス/i);
-    await userEvent.type(emailInput, "test@example.com");
-    await userEvent.tab();
-
     // 性別を選択せずに送信
-    const submitButton = canvas.getByRole("button", { name: /登録/i });
+    const submitButton = canvas.getByRole("button", { name: /保存/i });
     await userEvent.click(submitButton);
 
     // バリデーションエラーが表示されるのを待つ
@@ -80,30 +57,24 @@ export const GenderError: Story = {
   },
 };
 
-// 利用規約のバリデーションエラー
-export const TermsError: Story = {
+// 生年月日のバリデーションエラー
+export const BirthDateError: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const nameInput = canvas.getByLabelText(/名前/i);
     await userEvent.type(nameInput, "テストユーザー");
     await userEvent.tab();
 
-    const emailInput = canvas.getByLabelText(/メールアドレス/i);
-    await userEvent.type(emailInput, "test@example.com");
-    await userEvent.tab();
-
     // 性別を選択
     const genderMale = canvas.getByLabelText(/男性/i);
     await userEvent.click(genderMale);
 
-    // 利用規約に同意せずに送信
-    const submitButton = canvas.getByRole("button", { name: /登録/i });
+    // 生年月日を入力せずに送信
+    const submitButton = canvas.getByRole("button", { name: /保存/i });
     await userEvent.click(submitButton);
 
     // バリデーションエラーが表示されるのを待つ
-    await expect(
-      canvas.getByText(/利用規約への同意が必要です/i)
-    ).toBeInTheDocument();
+    await expect(canvas.getByText(/生年月日は必須です/i)).toBeInTheDocument();
   },
 };
 
@@ -112,20 +83,15 @@ export const MultipleErrors: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     // 空のフォームで送信を試みる
-    const submitButton = canvas.getByRole("button", { name: /登録/i });
+    const submitButton = canvas.getByRole("button", { name: /保存/i });
     await userEvent.click(submitButton);
 
     // 複数のバリデーションエラーが表示されるのを待つ
     await expect(canvas.getByText(/名前は必須です/i)).toBeInTheDocument();
     await expect(
-      canvas.getByText(/メールアドレスは必須です/i)
-    ).toBeInTheDocument();
-    await expect(
       canvas.getByText(/性別を選択してください/i)
     ).toBeInTheDocument();
-    await expect(
-      canvas.getByText(/利用規約への同意が必要です/i)
-    ).toBeInTheDocument();
+    await expect(canvas.getByText(/生年月日は必須です/i)).toBeInTheDocument();
   },
 };
 
@@ -137,22 +103,23 @@ export const Filled: Story = {
     await userEvent.type(nameInput, "山田太郎");
     await userEvent.tab();
 
-    const emailInput = canvas.getByLabelText(/メールアドレス/i);
-    await userEvent.type(emailInput, "yamada@example.com");
-    await userEvent.tab();
-
     // 性別を選択
     const genderMale = canvas.getByLabelText(/男性/i);
     await userEvent.click(genderMale);
 
-    // 利用規約に同意
-    const termsCheckbox = canvas.getByLabelText(/利用規約に同意します/i);
-    await userEvent.click(termsCheckbox);
+    // 生年月日を入力
+    const birthDateInput = canvas.getByLabelText(/生年月日/i);
+    await userEvent.type(birthDateInput, "1990-01-15");
+    await userEvent.tab();
+
+    // 備考を入力
+    const noteInput = canvas.getByLabelText(/備考/i);
+    await userEvent.type(noteInput, "よろしくお願いします");
 
     // フォームが正しく入力されていることを確認
     await expect(nameInput).toHaveValue("山田太郎");
-    await expect(emailInput).toHaveValue("yamada@example.com");
     await expect(genderMale).toBeChecked();
-    await expect(termsCheckbox).toBeChecked();
+    await expect(birthDateInput).toHaveValue("1990-01-15");
+    await expect(noteInput).toHaveValue("よろしくお願いします");
   },
 };
