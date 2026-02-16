@@ -1,32 +1,35 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { auth } from "@/auth";
+import { db } from "@/src/index";
+import { profile } from "@/src/db/schema";
+import { eq } from "drizzle-orm";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { ThemeToggle } from "../../components/ThemeToggle";
+import { LogoutButton } from "../../components/LogoutButton";
+import { ProfileCard } from "../../components/ProfileCard";
 import { UserForm } from "../../components/UserForm";
 
-export default function DashboardPage() {
-  const router = useRouter();
-  const { data: session, isPending } = authClient.useSession();
-
-  const handleLogout = async () => {
-    await authClient.signOut();
-    router.push("/login");
-  };
-
-  if (isPending) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
-        <div className="text-zinc-600 dark:text-zinc-400">読み込み中...</div>
-      </div>
-    );
-  }
+export default async function DashboardPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   if (!session) {
-    router.push("/login");
-    return null;
+    redirect("/login");
   }
+
+  const userProfile = await db
+    .select({
+      name: profile.name,
+      gender: profile.gender,
+      birthDate: profile.birthDate,
+      note: profile.note,
+    })
+    .from(profile)
+    .where(eq(profile.userId, session.user.id))
+    .limit(1);
+
+  const profileData = userProfile[0] ?? null;
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -35,11 +38,9 @@ export default function DashboardPage() {
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
           ようこそ、{session.user.name || session.user.email}さん
         </p>
-        <Button variant="outline" size="sm" onClick={handleLogout}>
-          ログアウト
-        </Button>
+        <LogoutButton />
       </div>
-      <UserForm />
+      {profileData ? <ProfileCard profile={profileData} /> : <UserForm />}
     </div>
   );
 }

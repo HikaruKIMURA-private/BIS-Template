@@ -5,9 +5,14 @@ import { getInputProps, getTextareaProps, useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod/v3";
 import { useActionState } from "react";
 import { submitProfileForm } from "../actions";
-import { profileFormSchema } from "../schema";
+import { type ProfileData, profileFormSchema } from "../schema";
 
-export function UserForm() {
+type UserFormProps = {
+  defaultProfile?: ProfileData;
+  onCancel?: () => void;
+};
+
+export function UserForm({ defaultProfile, onCancel }: UserFormProps) {
   // 性別の選択肢
   const genderOptions: Array<{ value: string; label: string }> = [
     { value: "male", label: "男性" },
@@ -18,13 +23,15 @@ export function UserForm() {
     undefined
   );
 
+  const isEditing = !!defaultProfile;
+
   const [form, fields] = useForm({
     lastResult,
     defaultValue: {
-      name: "",
-      gender: "",
-      birthDate: "",
-      note: "",
+      name: defaultProfile?.name ?? "",
+      gender: defaultProfile?.gender ?? "",
+      birthDate: defaultProfile?.birthDate ?? "",
+      note: defaultProfile?.note ?? "",
     },
     onValidate({ formData }) {
       return parseWithZod(formData, {
@@ -38,7 +45,7 @@ export function UserForm() {
   return (
     <div className="w-full max-w-md rounded-lg border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
       <h2 className="mb-6 text-2xl font-bold text-zinc-900 dark:text-zinc-100">
-        プロフィール登録
+        {isEditing ? "プロフィール編集" : "プロフィール登録"}
       </h2>
 
       <form
@@ -177,14 +184,26 @@ export function UserForm() {
           </div>
         )}
 
-        {/* 送信ボタン */}
-        <Button
-          type="submit"
-          disabled={isPending}
-          className="w-full rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600"
-        >
-          {isPending ? "保存中..." : "保存"}
-        </Button>
+        {/* ボタン */}
+        <div className={onCancel ? "flex gap-3" : ""}>
+          {onCancel && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onCancel}
+              className="flex-1"
+            >
+              キャンセル
+            </Button>
+          )}
+          <Button
+            type="submit"
+            disabled={isPending}
+            className={`${onCancel ? "flex-1" : "w-full"} rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600`}
+          >
+            {isPending ? "保存中..." : "保存"}
+          </Button>
+        </div>
       </form>
     </div>
   );

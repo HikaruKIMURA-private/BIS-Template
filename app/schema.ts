@@ -19,3 +19,10 @@ export const profileFormSchema = z.object({
 });
 
 export type ProfileFormData = z.infer<typeof profileFormSchema>;
+
+export type ProfileData = {
+  name: string;
+  gender: string;
+  birthDate: string;
+  note: string | null;
+};
