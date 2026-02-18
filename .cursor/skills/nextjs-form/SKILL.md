@@ -7,12 +7,12 @@ description: Next.js のフォーム実装ガイド。conform, zod, Server Actio
 
 このプロジェクトでは、フォーム実装に以下の技術スタックを **必須** とする。
 
-| ライブラリ | 用途 |
-|---|---|
-| **zod** | バリデーションスキーマ定義 |
+| ライブラリ                                  | 用途                                 |
+| ------------------------------------------- | ------------------------------------ |
+| **zod**                                     | バリデーションスキーマ定義           |
 | **@conform-to/react** + **@conform-to/zod** | フォーム状態管理・バリデーション連携 |
-| **Server Action** (`"use server"`) | フォーム送信処理 |
-| **useActionState** (React 19) | Server Action の状態管理 |
+| **Server Action** (`"use server"`)          | フォーム送信処理                     |
+| **useActionState** (React 19)               | Server Action の状態管理             |
 
 > `useState` によるフォーム管理や `onSubmit` で `e.preventDefault()` する従来パターンは **禁止**。
 
@@ -91,7 +91,7 @@ export async function submitMyForm(
 async function actionName(
   _prevState: FormActionResult | undefined,
   formData: FormData
-): Promise<FormActionResult>
+): Promise<FormActionResult>;
 ```
 
 - 第1引数: `useActionState` から渡される前回の結果
@@ -131,12 +131,7 @@ export function MyForm() {
   });
 
   return (
-    <form
-      id={form.id}
-      onSubmit={form.onSubmit}
-      action={formAction}
-      noValidate
-    >
+    <form id={form.id} onSubmit={form.onSubmit} action={formAction} noValidate>
       {/* 各フィールド */}
       <input {...getInputProps(fields.name, { type: "text" })} />
       {fields.name.errors?.length > 0 && (
@@ -176,22 +171,24 @@ export function MyForm() {
 
 ### input のヘルパー関数
 
-| 要素 | ヘルパー |
-|---|---|
-| `<input>` | `getInputProps(fields.xxx, { type: "text" })` |
-| `<textarea>` | `getTextareaProps(fields.xxx)` |
-| `<select>` | `getSelectProps(fields.xxx)` |
-| `<input type="radio">` | `getInputProps(fields.xxx, { type: "radio", value: "..." })` |
-| `<input type="checkbox">` | `getInputProps(fields.xxx, { type: "checkbox" })` |
+| 要素                      | ヘルパー                                                     |
+| ------------------------- | ------------------------------------------------------------ |
+| `<input>`                 | `getInputProps(fields.xxx, { type: "text" })`                |
+| `<textarea>`              | `getTextareaProps(fields.xxx)`                               |
+| `<select>`                | `getSelectProps(fields.xxx)`                                 |
+| `<input type="radio">`    | `getInputProps(fields.xxx, { type: "radio", value: "..." })` |
+| `<input type="checkbox">` | `getInputProps(fields.xxx, { type: "checkbox" })`            |
 
 ### エラー表示
 
 ```tsx
-{fields.xxx.errors && fields.xxx.errors.length > 0 && (
-  <p id={`${fields.xxx.id}-error`} role="alert">
-    {fields.xxx.errors[0]}
-  </p>
-)}
+{
+  fields.xxx.errors && fields.xxx.errors.length > 0 && (
+    <p id={`${fields.xxx.id}-error`} role="alert">
+      {fields.xxx.errors[0]}
+    </p>
+  );
+}
 ```
 
 ### 送信状態の管理

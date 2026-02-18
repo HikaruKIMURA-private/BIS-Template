@@ -13,28 +13,31 @@ Next.js App Router ベースのフルスタックアプリケーション。Reac
 
 ## Key Libraries
 
-| カテゴリ | ライブラリ | 用途 |
-|---------|-----------|------|
-| 認証 | Better Auth | Email/Password + OAuth 認証 |
-| フォーム | Conform (`@conform-to/react`, `@conform-to/zod`) | Server Action 対応フォーム処理 |
-| バリデーション | Zod | スキーマ定義・バリデーション |
-| ORM | Drizzle ORM | 型安全なデータベースクエリ |
-| DB | PostgreSQL（Supabase） | データストア |
-| UI | Radix UI + Tailwind CSS v4 | アクセシブルなUIプリミティブ + ユーティリティCSS |
-| テーマ | next-themes | ダークモード対応 |
+| カテゴリ       | ライブラリ                                       | 用途                                             |
+| -------------- | ------------------------------------------------ | ------------------------------------------------ |
+| 認証           | Better Auth                                      | Email/Password + OAuth 認証                      |
+| フォーム       | Conform (`@conform-to/react`, `@conform-to/zod`) | Server Action 対応フォーム処理                   |
+| バリデーション | Zod                                              | スキーマ定義・バリデーション                     |
+| ORM            | Drizzle ORM                                      | 型安全なデータベースクエリ                       |
+| DB             | PostgreSQL（Supabase）                           | データストア                                     |
+| UI             | Radix UI + Tailwind CSS v4                       | アクセシブルなUIプリミティブ + ユーティリティCSS |
+| テーマ         | next-themes                                      | ダークモード対応                                 |
 
 ## Development Standards
 
 ### Type Safety
+
 - TypeScript strict mode 有効
 - `noEmit` 設定でビルドと型チェックを分離
 - Zod スキーマからの型推論で二重定義を回避
 
 ### Code Quality
+
 - ESLint + Prettier による自動整形
 - `eslint-config-next` + `eslint-config-prettier` の統合設定
 
 ### Testing
+
 - **Unit/Integration**: Vitest + Testing Library（jsdom 環境）
 - **Visual**: Storybook 10 + Chromatic
 - **E2E**: Playwright（vitest-browser 経由）
@@ -42,11 +45,13 @@ Next.js App Router ベースのフルスタックアプリケーション。Reac
 ## Development Environment
 
 ### Required Tools
+
 - Node.js 20+
 - pnpm
 - Supabase CLI（ローカル DB）
 
 ### Common Commands
+
 ```bash
 # Dev: pnpm dev
 # Build: pnpm build
@@ -66,4 +71,5 @@ Next.js App Router ベースのフルスタックアプリケーション。Reac
 - **Path Alias `@/`**: プロジェクトルートからの絶対パスインポートを標準化
 
 ---
+
 _Document standards and patterns, not every dependency_

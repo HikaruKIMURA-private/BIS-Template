@@ -36,24 +36,24 @@ const [form, fields] = useForm({
   },
 
   // バリデーションタイミング
-  shouldValidate: "onBlur",       // 初回バリデーション: フォーカスアウト時
-  shouldRevalidate: "onInput",    // 再バリデーション: 入力時
+  shouldValidate: "onBlur", // 初回バリデーション: フォーカスアウト時
+  shouldRevalidate: "onInput", // 再バリデーション: 入力時
 });
 ```
 
 ## getInputProps の type 一覧
 
 ```ts
-getInputProps(fields.xxx, { type: "text" })
-getInputProps(fields.xxx, { type: "email" })
-getInputProps(fields.xxx, { type: "password" })
-getInputProps(fields.xxx, { type: "number" })
-getInputProps(fields.xxx, { type: "date" })
-getInputProps(fields.xxx, { type: "hidden" })
-getInputProps(fields.xxx, { type: "radio", value: "option1" })
-getInputProps(fields.xxx, { type: "checkbox" })
-getInputProps(fields.xxx, { type: "checkbox", value: "option1" }) // チェックボックスグループ
-getInputProps(fields.xxx, { type: "file" })
+getInputProps(fields.xxx, { type: "text" });
+getInputProps(fields.xxx, { type: "email" });
+getInputProps(fields.xxx, { type: "password" });
+getInputProps(fields.xxx, { type: "number" });
+getInputProps(fields.xxx, { type: "date" });
+getInputProps(fields.xxx, { type: "hidden" });
+getInputProps(fields.xxx, { type: "radio", value: "option1" });
+getInputProps(fields.xxx, { type: "checkbox" });
+getInputProps(fields.xxx, { type: "checkbox", value: "option1" }); // チェックボックスグループ
+getInputProps(fields.xxx, { type: "file" });
 ```
 
 ## ネストされたオブジェクト
@@ -149,7 +149,11 @@ export async function myAction(
   }
 
   // 成功
-  return { status: "success" as const, message: "保存しました", value: submission.value };
+  return {
+    status: "success" as const,
+    message: "保存しました",
+    value: submission.value,
+  };
 }
 ```
 
