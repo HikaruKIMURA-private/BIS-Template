@@ -10,6 +10,8 @@ jobs:
   unit-test:
     name: Unit Test
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,7 +36,7 @@ jobs:
         run: pnpm lint
 
       - name: Run unit tests
-        run: pnpm test
+        run: pnpm test --project=unit
 
   e2e-test:
     name: E2E Test
