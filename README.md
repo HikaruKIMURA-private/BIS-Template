@@ -27,6 +27,17 @@
 
 ## セットアップ
 
+### 0. safe-chainのインストール
+
+セキュリテイ対策として、safe-chain をインストールしてください
+
+```bash
+# macOS
+curl -fsSL https://github.com/AikidoSec/safe-chain/releases/latest/download/install-safe-chain.sh | sh
+
+# https://github.com/AikidoSec/safe-chain
+```
+
 ### 1. Docker のインストール
 
 [Docker Desktop](https://www.docker.com/products/docker-desktop/) または [OrbStack](https://orbstack.dev/)（macOS 推奨）をインストールしてください。
@@ -163,14 +174,6 @@ pnpm test
 
 このプロジェクトでは [cc-sdd](https://github.com/gotalab/cc-sdd) を使った仕様駆動開発（Spec-Driven Development）を採用しています。
 
-実装前に要件・設計・タスク計画を承認することで、手戻りを防止します。
-
-### なぜ仕様駆動開発か
-
-- **認識齟齬の防止**: 実装前に要件を明確化し、AI との認識ズレを防ぐ
-- **手戻りコストの削減**: 設計段階で問題を発見すれば、修正コストは最小限
-- **トレーサビリティ**: 要件 → 設計 → タスク → 実装が紐づく
-
 ### 開発フロー
 
 ```
@@ -261,15 +264,5 @@ pnpm test
 ```bash
 /kiro:spec-status <feature-name>
 ```
-
-### 使い分けガイド
-
-| 場面                             | 推奨                       |
-| -------------------------------- | -------------------------- |
-| 変数名の修正、軽微な UI 調整     | 通常の開発で十分           |
-| プロトタイピング、探索的開発     | 通常の開発で素早く試す     |
-| 複数ファイルに影響する機能開発   | 仕様駆動開発を推奨         |
-| セキュリティ・パフォーマンス変更 | 仕様駆動開発 + 検証ゲート  |
-| 既存システムの大規模拡張         | 仕様駆動開発（必須レベル） |
 
 参考: [cc-sdd の仕様駆動開発プロセス解説](https://zenn.dev/tmasuyama1114/articles/cc_sdd_whole_flow)
