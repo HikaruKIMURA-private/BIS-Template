@@ -7,7 +7,7 @@ import { db } from "@/db";
 import { profile } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
-import { type ProfileFormData, profileFormSchema } from "./schema";
+import { type ProfileFormData, profileFormSchema } from "../schema";
 
 // Server Actionの戻り値の型
 export type FormActionResult =

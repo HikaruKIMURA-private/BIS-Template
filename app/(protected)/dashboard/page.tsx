@@ -1,7 +1,5 @@
 import { auth } from "@/auth";
-import { db } from "@/db";
-import { profile } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { getUserProfile } from "@/app/data/profile";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { ThemeToggle } from "../../components/ThemeToggle";
@@ -18,18 +16,7 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const userProfile = await db
-    .select({
-      name: profile.name,
-      gender: profile.gender,
-      birthDate: profile.birthDate,
-      note: profile.note,
-    })
-    .from(profile)
-    .where(eq(profile.userId, session.user.id))
-    .limit(1);
-
-  const profileData = userProfile[0] ?? null;
+  const profileData = await getUserProfile(session.user.id);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 font-sans dark:bg-black">

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { getInputProps, getTextareaProps, useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod/v3";
 import { useActionState } from "react";
-import { submitProfileForm } from "../actions";
+import { submitProfileForm } from "../actions/profile";
 import { type ProfileData, profileFormSchema } from "../schema";
 
 type UserFormProps = {

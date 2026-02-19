@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { UserForm } from "./UserForm";
 
 // Server Actionをモック（DB依存を回避）
-vi.mock("../actions", () => ({
+vi.mock("../actions/profile", () => ({
   submitProfileForm: vi.fn(),
 }));
 
