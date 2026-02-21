@@ -32,8 +32,8 @@ jobs:
       - name: TypeCheck
         run: pnpm typecheck
 
-      - name: Lint
-        run: pnpm lint
+      - name: Lint/Format
+        run: pnpm biome
 
       - name: Run unit tests
         run: pnpm test --project=unit

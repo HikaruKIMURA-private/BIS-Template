@@ -16,6 +16,7 @@
 | ORM                    | Drizzle ORM                                      |
 | テスト                 | Vitest (Unit), storybook(結合), Playwright (E2E) |
 | コンポーネントカタログ | Storybook                                        |
+| Lint/Format            | Biome                                            |
 | CI/CD                  | GitHub Actions, Chromatic                        |
 | 仕様書駆動ツール       | cc-sdd                                           |
 
@@ -108,8 +109,7 @@ pnpm dev
 
 | 拡張機能                  | 用途                       |
 | ------------------------- | -------------------------- |
-| Prettier                  | コードフォーマッター       |
-| ESLint                    | リアルタイム lint          |
+| Biome                     | Lint/Format ツール         |
 | Playwright Test           | E2E テストの実行・デバッグ |
 | Tailwind CSS IntelliSense | クラス名の補完             |
 | Auto Rename Tag           | JSX タグの自動リネーム     |
@@ -138,8 +138,7 @@ pnpm dev
 | コマンド         | 説明                    |
 | ---------------- | ----------------------- |
 | `pnpm typecheck` | TypeScript 型チェック   |
-| `pnpm lint`      | ESLint 実行             |
-| `pnpm format`    | Prettier でフォーマット |
+| `pnpm biome`     | Biome で Lint/Format    |
 | `pnpm test`      | Unit テスト実行         |
 | `pnpm e2e`       | E2E テスト実行          |
 
@@ -153,10 +152,8 @@ Pull Request を作成する前に、以下のコマンドを実行してくだ�
 # 型チェック
 pnpm typecheck
 
-# Lint
-pnpm lint
-
-pnpm format
+# Lint/Format
+pnpm biome
 
 # Unit テスト
 pnpm test
@@ -165,7 +162,7 @@ pnpm test
 ### CI で自動検証される項目
 
 - TypeScript 型チェック
-- ESLint
+- Biome（Lint/Format）
 - Unit テスト（Vitest）
 - E2E テスト（Playwright）
 - Chromatic（Visual Regression テスト）
