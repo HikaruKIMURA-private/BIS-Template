@@ -1,9 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { getInputProps, getTextareaProps, useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod/v3";
 import { useActionState } from "react";
+
+import { Button } from "@/components/ui/button";
 import { submitProfileForm } from "../actions/profile";
 import { type ProfileData, profileFormSchema } from "../schema";
 
@@ -65,7 +66,7 @@ export function UserForm({ defaultProfile, onCancel }: UserFormProps) {
           <input
             {...getInputProps(fields.name, { type: "text" })}
             placeholder="山田太郎"
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-zinc-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-zinc-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-blue-400 dark:focus:ring-blue-400"
           />
           {fields.name.errors && fields.name.errors.length > 0 && (
             <p
@@ -122,7 +123,7 @@ export function UserForm({ defaultProfile, onCancel }: UserFormProps) {
           </label>
           <input
             {...getInputProps(fields.birthDate, { type: "date" })}
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-zinc-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-zinc-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-blue-400 dark:focus:ring-blue-400"
           />
           {fields.birthDate.errors && fields.birthDate.errors.length > 0 && (
             <p
@@ -147,7 +148,7 @@ export function UserForm({ defaultProfile, onCancel }: UserFormProps) {
             {...getTextareaProps(fields.note)}
             placeholder="自己紹介など"
             rows={4}
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-zinc-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-zinc-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-blue-400 dark:focus:ring-blue-400"
           />
           {fields.note.errors && fields.note.errors.length > 0 && (
             <p
@@ -199,7 +200,7 @@ export function UserForm({ defaultProfile, onCancel }: UserFormProps) {
           <Button
             type="submit"
             disabled={isPending}
-            className={`${onCancel ? "flex-1" : "w-full"} rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600`}
+            className={`${onCancel ? "flex-1" : "w-full"} rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600`}
           >
             {isPending ? "保存中..." : "保存"}
           </Button>

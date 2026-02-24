@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import type { ProfileData } from "../schema";
+
+import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
 import { UserForm } from "./UserForm";
 
 const genderLabel: Record<string, string> = {
