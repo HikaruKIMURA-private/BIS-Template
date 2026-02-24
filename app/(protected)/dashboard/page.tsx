@@ -1,10 +1,11 @@
-import { auth } from "@/auth";
-import { getUserProfile } from "@/app/data/profile";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { ThemeToggle } from "../../components/ThemeToggle";
+
+import { getUserProfile } from "@/app/data/profile";
+import { auth } from "@/auth";
 import { LogoutButton } from "../../components/LogoutButton";
 import { ProfileCard } from "../../components/ProfileCard";
+import { ThemeToggle } from "../../components/ThemeToggle";
 import { UserForm } from "../../components/UserForm";
 
 export default async function DashboardPage() {
