@@ -1,0 +1,36 @@
+{
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": false,
+  "printWidth": 80,
+  "tabWidth": 2,
+  "useTabs": false,
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "sortImports": {
+    "newlinesBetween": false,
+    "groups": [
+      "type-import",
+      { "newlinesBetween": true },
+      ["value-builtin", "value-external"],
+      { "newlinesBetween": true },
+      "value-internal",
+      ["value-parent", "value-sibling", "value-index"],
+      "unknown"
+    ]
+  },
+  "sortTailwindcss": {
+    "stylesheet": "./app/globals.css",
+    "functions": ["clsx", "cn"]
+  },
+  "ignorePatterns": [
+    ".next/**",
+    ".cursor/**",
+    ".vscode/**",
+    ".kiro/**",
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "public/**"
+  ]
+}
