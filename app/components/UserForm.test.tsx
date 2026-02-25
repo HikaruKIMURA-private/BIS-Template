@@ -57,8 +57,28 @@ describe("UserForm", () => {
 
     expect(screen.getByText("男性")).toBeInTheDocument();
     expect(screen.getByText("女性")).toBeInTheDocument();
-    // ラジオボタンが2つ存在することを確認
-    expect(screen.getAllByRole("radio")).toHaveLength(2);
+    expect(screen.getAllByRole("radio")).toHaveLength(6);
+  });
+
+  it("血液型のラジオボタンが正しく表示される", () => {
+    render(<UserForm />);
+
+    expect(screen.getByText("A型")).toBeInTheDocument();
+    expect(screen.getByText("B型")).toBeInTheDocument();
+    expect(screen.getByText("O型")).toBeInTheDocument();
+    expect(screen.getByText("AB型")).toBeInTheDocument();
+  });
+
+  it("血液型を選択できる", async () => {
+    const user = userEvent.setup();
+    render(<UserForm />);
+
+    const radios = screen.getAllByRole("radio");
+    const bloodTypeARadio = radios[2];
+
+    await user.click(bloodTypeARadio);
+
+    expect(bloodTypeARadio).toBeChecked();
   });
 
   it("フォームフィールドに入力できる", async () => {

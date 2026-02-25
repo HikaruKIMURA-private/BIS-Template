@@ -10,6 +10,7 @@ export async function getUserProfile(userId: string) {
       gender: profile.gender,
       birthDate: profile.birthDate,
       note: profile.note,
+      bloodType: profile.bloodType,
     })
     .from(profile)
     .where(eq(profile.userId, userId))

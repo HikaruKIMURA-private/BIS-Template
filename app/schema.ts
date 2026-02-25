@@ -16,6 +16,11 @@ export const profileFormSchema = z.object({
       message: "有効な日付を入力してください",
     }),
   note: z.string().max(500, "備考は500文字以内で入力してください").optional(),
+  bloodType: z
+    .enum(["A", "B", "O", "AB"], {
+      message: "血液型を正しく選択してください",
+    })
+    .optional(),
 });
 
 export type ProfileFormData = z.infer<typeof profileFormSchema>;
@@ -25,4 +30,5 @@ export type ProfileData = {
   gender: string;
   birthDate: string;
   note: string | null;
+  bloodType: string | null;
 };

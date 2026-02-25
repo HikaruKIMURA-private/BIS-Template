@@ -19,6 +19,13 @@ export function UserForm({ defaultProfile, onCancel }: UserFormProps) {
     { value: "male", label: "男性" },
     { value: "female", label: "女性" },
   ];
+
+  const bloodTypeOptions: Array<{ value: string; label: string }> = [
+    { value: "A", label: "A型" },
+    { value: "B", label: "B型" },
+    { value: "O", label: "O型" },
+    { value: "AB", label: "AB型" },
+  ];
   const [lastResult, formAction, isPending] = useActionState(
     submitProfileForm,
     undefined
@@ -33,6 +40,7 @@ export function UserForm({ defaultProfile, onCancel }: UserFormProps) {
       gender: defaultProfile?.gender ?? "",
       birthDate: defaultProfile?.birthDate ?? "",
       note: defaultProfile?.note ?? "",
+      bloodType: defaultProfile?.bloodType ?? "",
     },
     onValidate({ formData }) {
       return parseWithZod(formData, {
@@ -108,6 +116,40 @@ export function UserForm({ defaultProfile, onCancel }: UserFormProps) {
                 role="alert"
               >
                 {fields.gender.errors[0]}
+              </p>
+            )}
+          </fieldset>
+        </div>
+
+        {/* 血液型フィールド（ラジオボタン） */}
+        <div className="mb-4">
+          <fieldset>
+            <legend className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              血液型
+            </legend>
+            <div className="flex gap-4">
+              {bloodTypeOptions.map((option) => (
+                <label key={option.value} className="flex items-center gap-2">
+                  <input
+                    {...getInputProps(fields.bloodType, {
+                      type: "radio",
+                      value: option.value,
+                    })}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-400"
+                  />
+                  <span className="text-sm text-zinc-700 dark:text-zinc-300">
+                    {option.label}
+                  </span>
+                </label>
+              ))}
+            </div>
+            {fields.bloodType.errors && fields.bloodType.errors.length > 0 && (
+              <p
+                id={`${fields.bloodType.id}-error`}
+                className="mt-1 text-sm text-red-600 dark:text-red-400"
+                role="alert"
+              >
+                {fields.bloodType.errors[0]}
               </p>
             )}
           </fieldset>
