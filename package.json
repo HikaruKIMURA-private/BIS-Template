@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "drizzle-kit migrate && next build",
     "build-storybook": "storybook build",
     "chromatic": "npx chromatic --project-token=chpt_590769897e949fd",
     "db:generate": "drizzle-kit generate",
