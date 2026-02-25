@@ -9,3 +9,11 @@ export const baseUrl = (options?: { useCommitURL?: boolean }) => {
     ? `https://${url}`
     : `http://localhost:${process.env.NEXT_PUBLIC_PORT || 3000}`;
 };
+
+export const vercelOrigins = [
+  process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL,
+  process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL,
+  process.env.NEXT_PUBLIC_VERCEL_URL,
+]
+  .filter(Boolean)
+  .map((url) => `https://${url}`);
