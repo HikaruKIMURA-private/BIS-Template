@@ -33,14 +33,14 @@ Next.js App Router ベースのフルスタックアプリケーション。Reac
 
 ### Code Quality
 
-- ESLint + Prettier による自動整形
-- `eslint-config-next` + `eslint-config-prettier` の統合設定
+- OxLint（`oxlint`）による高速リント + OxFmt（`oxfmt`）による自動整形
+- `.oxlintrc.json` でルール設定、`.oxfmtrc.json` でフォーマット設定
 
 ### Testing
 
 - **Unit/Integration**: Vitest + Testing Library（jsdom 環境）
 - **Visual**: Storybook 10 + Chromatic
-- **E2E**: Playwright（vitest-browser 経由）
+- **E2E**: Playwright（`e2e/` ディレクトリ、`pnpm e2e` で実行）
 
 ## Development Environment
 
@@ -56,9 +56,11 @@ Next.js App Router ベースのフルスタックアプリケーション。Reac
 # Dev: pnpm dev
 # Build: pnpm build
 # Test: pnpm test
+# E2E: pnpm e2e
 # Storybook: pnpm storybook
 # Type Check: pnpm typecheck
-# Lint: pnpm lint
+# Lint: pnpm lint (oxlint --fix)
+# Format: pnpm fmt (oxfmt)
 # DB Migrate: pnpm db:migrate
 # DB Start: pnpm db:start
 ```

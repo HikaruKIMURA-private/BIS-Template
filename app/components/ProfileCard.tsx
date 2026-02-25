@@ -13,6 +13,13 @@ const genderLabel: Record<string, string> = {
   other: "その他",
 };
 
+const bloodTypeLabel: Record<string, string> = {
+  A: "A型",
+  B: "B型",
+  O: "O型",
+  AB: "AB型",
+};
+
 export function ProfileCard({ profile }: { profile: ProfileData }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -51,6 +58,17 @@ export function ProfileCard({ profile }: { profile: ProfileData }) {
             {genderLabel[profile.gender] ?? profile.gender}
           </dd>
         </div>
+
+        {profile.bloodType && (
+          <div>
+            <dt className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+              血液型
+            </dt>
+            <dd className="mt-1 text-zinc-900 dark:text-zinc-100">
+              {bloodTypeLabel[profile.bloodType] ?? profile.bloodType}
+            </dd>
+          </div>
+        )}
 
         <div>
           <dt className="text-sm font-medium text-zinc-500 dark:text-zinc-400">

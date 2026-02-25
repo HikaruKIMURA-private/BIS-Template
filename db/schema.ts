@@ -92,6 +92,7 @@ export const profile = pgTable(
     gender: text("gender").notNull(), // "male" | "female" | "other"
     birthDate: date("birth_date").notNull(),
     note: text("note"),
+    bloodType: text("blood_type"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

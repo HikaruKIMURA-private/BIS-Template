@@ -4,7 +4,9 @@ import type { SubmissionResult } from "@conform-to/react";
 
 import { parseWithZod } from "@conform-to/zod/v3";
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
 import { db } from "@/db";
@@ -44,7 +46,8 @@ export async function submitProfileForm(
   }
 
   // バリデーション成功時の処理
-  const { name, gender, birthDate, note } = submission.value as ProfileFormData;
+  const { name, gender, birthDate, note, bloodType } =
+    submission.value as ProfileFormData;
 
   try {
     // 既存のプロフィールを確認
@@ -63,6 +66,7 @@ export async function submitProfileForm(
           gender,
           birthDate,
           note: note || null,
+          bloodType: bloodType ?? null,
         })
         .where(eq(profile.userId, session.user.id));
     } else {
@@ -74,15 +78,9 @@ export async function submitProfileForm(
         gender,
         birthDate,
         note: note || null,
+        bloodType: bloodType ?? null,
       });
     }
-
-    // 成功レスポンスを返す
-    return {
-      status: "success" as const,
-      message: "プロフィールを保存しました！",
-      value: { name, gender, birthDate, note },
-    };
   } catch (error) {
     console.error("プロフィール保存エラー:", error);
     return {
@@ -90,4 +88,7 @@ export async function submitProfileForm(
       error: { "": ["プロフィールの保存に失敗しました。"] },
     } as SubmissionResult<string[]>;
   }
+
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
 }
