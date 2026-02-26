@@ -18,6 +18,7 @@
 | コンポーネントカタログ | Storybook                                        |
 | Lint/Format            | oxlint, oxfmt                                    |
 | CI/CD                  | GitHub Actions, Chromatic                        |
+| ホスティング(インフラ) | vercel                                           |
 | 仕様書駆動ツール       | cc-sdd                                           |
 
 ## 必要なツール
