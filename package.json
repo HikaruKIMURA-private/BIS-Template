@@ -9,6 +9,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:start": "pnpx supabase start",
+    "db:stop": "pnpx supabase stop",
     "db:status": "pnpx supabase status",
     "dev": "next dev",
     "e2e": "playwright test",
