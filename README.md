@@ -16,7 +16,7 @@
 | ORM                    | Drizzle ORM                                      |
 | テスト                 | Vitest (Unit), storybook(結合), Playwright (E2E) |
 | コンポーネントカタログ | Storybook                                        |
-| Lint/Format            | Biome                                            |
+| Lint/Format            | oxlint, oxfmt                                    |
 | CI/CD                  | GitHub Actions, Chromatic                        |
 | 仕様書駆動ツール       | cc-sdd                                           |
 
