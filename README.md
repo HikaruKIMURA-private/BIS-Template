@@ -42,7 +42,7 @@ curl -fsSL https://github.com/AikidoSec/safe-chain/releases/latest/download/inst
 
 ### 1. Docker のインストール
 
-[Docker Desktop](https://www.docker.com/products/docker-desktop/) または [OrbStack](https://orbstack.dev/)（macOS 推奨）をインストールしてください。
+[Docker Desktop](https://www.docker.com/products/docker-desktop/) をインストールしてください。
 
 ### 2. mise のインストール
 
@@ -65,8 +65,10 @@ source ~/.zshrc
 ### 3. プロジェクトのセットアップ
 
 ```bash
-# リポジトリをクローン
-git clone <repository-url>
+# リポジトリをフォーク & クローン
+# 1. GitHub 上で "Fork" ボタンをクリック
+# 2. フォークしたリポジトリをクローン
+git clone <your-fork-url>
 cd BIS-Template
 
 # mise でツールをインストール（Node.js, pnpm）
@@ -84,7 +86,6 @@ cp .env.example .env.local
 ```
 
 `.env.local` を編集し、必要な値を設定してください。
-GitHub OAuth の開発用クレデンシャルは別途共有します。
 
 ### 5. データベースのセットアップ
 
@@ -108,13 +109,10 @@ pnpm dev
 
 プロジェクトを開くと、推奨拡張機能のインストールを促すポップアップが表示されます。
 
-| 拡張機能                  | 用途                       |
-| ------------------------- | -------------------------- |
-| oxc                       | lint, format               |
-| Playwright Test           | E2E テストの実行・デバッグ |
-| Tailwind CSS IntelliSense | クラス名の補完             |
-| Auto Rename Tag           | JSX タグの自動リネーム     |
-| Path Intellisense         | import パスの補完          |
+| 拡張機能        | 用途                       |
+| --------------- | -------------------------- |
+| oxc             | lint, format               |
+| Playwright Test | E2E テストの実行・デバッグ |
 
 ### エディタでの設定
 
