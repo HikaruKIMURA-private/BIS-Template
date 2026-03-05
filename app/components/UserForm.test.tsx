@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -28,7 +28,6 @@ describe("UserForm", () => {
     cleanup();
     vi.clearAllMocks();
 
-    // useActionState のデフォルトの戻り値を設定
     const mockFn = await getMockUseActionState();
     mockFn.mockReturnValue([
       undefined, // lastResult
@@ -40,6 +39,8 @@ describe("UserForm", () => {
   afterEach(() => {
     cleanup();
   });
+
+  // --- 単体テスト: レンダリング ---
 
   it("フォームが正しくレンダリングされる", () => {
     render(<UserForm />);
@@ -68,6 +69,8 @@ describe("UserForm", () => {
     expect(screen.getByText("O型")).toBeInTheDocument();
     expect(screen.getByText("AB型")).toBeInTheDocument();
   });
+
+  // --- 単体テスト: インタラクション ---
 
   it("血液型を選択できる", async () => {
     const user = userEvent.setup();
@@ -103,12 +106,14 @@ describe("UserForm", () => {
     render(<UserForm />);
 
     const radios = screen.getAllByRole("radio");
-    const maleRadio = radios[0]; // 最初のラジオボタン（男性）
+    const maleRadio = radios[0];
 
     await user.click(maleRadio);
 
     expect(maleRadio).toBeChecked();
   });
+
+  // --- 単体テスト: 状態表示 ---
 
   it("送信中は保存ボタンが無効になる", async () => {
     const mockFn = await getMockUseActionState();
@@ -146,5 +151,72 @@ describe("UserForm", () => {
     expect(
       screen.getByText("プロフィールを保存しました！")
     ).toBeInTheDocument();
+  });
+
+  it("編集モードでは「プロフィール編集」と表示される", () => {
+    render(
+      <UserForm
+        defaultProfile={{
+          name: "山田太郎",
+          gender: "male",
+          birthDate: "1990-01-15",
+          note: null,
+          bloodType: null,
+        }}
+      />
+    );
+
+    expect(screen.getByText("プロフィール編集")).toBeInTheDocument();
+  });
+
+  // --- 結合テスト: バリデーションフロー（Storybook play 関数から移植） ---
+
+  describe("バリデーション", () => {
+    it("空フォーム送信で名前・性別・生年月日のエラーが表示される", async () => {
+      const user = userEvent.setup();
+      render(<UserForm />);
+
+      const submitButton = screen.getByRole("button", { name: "保存" });
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("名前は必須です")).toBeInTheDocument();
+      });
+      expect(screen.getByText("性別を選択してください")).toBeInTheDocument();
+      expect(screen.getByText("生年月日は必須です")).toBeInTheDocument();
+    });
+
+    it("名前のみ入力して送信すると性別・生年月日のエラーが表示される", async () => {
+      const user = userEvent.setup();
+      render(<UserForm />);
+
+      await user.type(screen.getByLabelText("名前"), "テストユーザー");
+      await user.click(screen.getByRole("button", { name: "保存" }));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText("性別を選択してください")
+        ).toBeInTheDocument();
+      });
+      expect(screen.getByText("生年月日は必須です")).toBeInTheDocument();
+      expect(screen.queryByText("名前は必須です")).not.toBeInTheDocument();
+    });
+
+    it("名前と性別を入力して送信すると生年月日のエラーのみ表示される", async () => {
+      const user = userEvent.setup();
+      render(<UserForm />);
+
+      await user.type(screen.getByLabelText("名前"), "テストユーザー");
+      await user.click(screen.getByLabelText("男性"));
+      await user.click(screen.getByRole("button", { name: "保存" }));
+
+      await waitFor(() => {
+        expect(screen.getByText("生年月日は必須です")).toBeInTheDocument();
+      });
+      expect(screen.queryByText("名前は必須です")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("性別を選択してください")
+      ).not.toBeInTheDocument();
+    });
   });
 });

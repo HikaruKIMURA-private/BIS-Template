@@ -41,6 +41,32 @@ jobs:
       - name: Run unit tests
         run: pnpm test --project=unit
 
+  integration-test:
+    name: Integration Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.20.0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.1
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Start Supabase
+        run: pnpm db:start
+
+      - name: Run integration tests
+        run: pnpm test --project=integration
+
   e2e-test:
     name: E2E Test
     runs-on: ubuntu-latest

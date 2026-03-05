@@ -38,9 +38,15 @@ Next.js App Router ベースのフルスタックアプリケーション。Reac
 
 ### Testing
 
-- **Unit/Integration**: Vitest + Testing Library（jsdom 環境）
-- **Visual**: Storybook 10 + Chromatic
-- **E2E**: Playwright（`e2e/` ディレクトリ、`pnpm e2e` で実行）
+- **開発手法**: TDD（テスト駆動開発）。実装の前にテストを書く。詳細は `.cursor/skills/nextjs-testing/SKILL.md`
+- **Unit**: Vitest + Testing Library（jsdom）。`*.test.tsx` で Client Component をテスト
+- **Integration**: Vitest（node + 実DB）。`*.test.ts` で Server Action / Data Fetching を実 PostgreSQL (postgres_test) でテスト
+  - auth / `next/headers` / `next/navigation` / `next/cache` のみモック。DB はモックしない
+  - テスト用 DB は `vitest.global-setup.ts` で自動作成・マイグレーション
+  - DB エラーのテストのみモック（`*.error.test.ts`）
+  - async Server Component は vitest 非対応のため E2E でカバー
+- **Visual**: Storybook 10 + Chromatic（コンポーネントカタログ専用、`pnpm test` からは除外）
+- **E2E**: Playwright（`e2e/` ディレクトリ、`pnpm e2e` で実行。認証フロー・ページ遷移・async Server Component）
 
 ## Development Environment
 
@@ -55,9 +61,9 @@ Next.js App Router ベースのフルスタックアプリケーション。Reac
 ```bash
 # Dev: pnpm dev
 # Build: pnpm build
-# Test: pnpm test
+# Test (unit/integration): pnpm test
 # E2E: pnpm e2e
-# Storybook: pnpm storybook
+# Storybook (catalog only): pnpm storybook
 # Type Check: pnpm typecheck
 # Lint: pnpm lint (oxlint --fix)
 # Format: pnpm fmt (oxfmt)

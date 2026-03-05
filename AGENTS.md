@@ -44,6 +44,30 @@ Kiro-style Spec Driven Development implementation on AI-DLC (AI Development Life
 - Keep steering current and verify alignment with `/kiro/spec-status`
 - Follow the user's instructions precisely, and within that scope act autonomously: gather the necessary context and complete the requested work end-to-end in this run, asking questions only when essential information is missing or the instructions are critically ambiguous.
 
+### TDD Workflow (Implementation Phase)
+
+`/kiro/spec-impl` による実装は **テスト駆動** で行う。テスト方針の詳細は `.cursor/skills/nextjs-testing/SKILL.md` に従う。
+
+**実装タスクごとの進め方:**
+
+1. **Red** — テストファイルを先に作成。`it.todo()` でケースを網羅 → 中身を実装し、テストが失敗することを確認
+2. **Green** — プロダクションコードを実装し、テストが通ることを確認
+3. **Refactor** — 必要に応じてリファクタ（テストは Green のまま）
+
+**`/kiro/spec-tasks` でのタスク生成ルール:**
+
+- 実装タスクの **前に** 対応するテストタスクを配置する
+- テストタスクは「テストケース定義（`it.todo()`）→ テスト実装 → プロダクションコード実装」の流れが分かる構造にする
+- テストが不要なタスク（スキーマ定義、マイグレーション生成等）はそのまま単独タスクとする
+
+例:
+```
+タスク 3: データ取得関数のテスト作成（it.todo → 実装）
+タスク 4: データ取得関数の実装（テスト Green を確認）
+タスク 5: Server Action のテスト作成（it.todo → 実装）
+タスク 6: Server Action の実装（テスト Green を確認）
+```
+
 ## Steering Configuration
 
 - Load entire `.kiro/steering/` as project memory
