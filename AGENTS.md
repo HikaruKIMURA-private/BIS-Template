@@ -44,6 +44,15 @@ Kiro-style Spec Driven Development implementation on AI-DLC (AI Development Life
 - Keep steering current and verify alignment with `/kiro/spec-status`
 - Follow the user's instructions precisely, and within that scope act autonomously: gather the necessary context and complete the requested work end-to-end in this run, asking questions only when essential information is missing or the instructions are critically ambiguous.
 
+### Testable Code
+
+テスタブルなコードを常に意識する。テストしにくいコードは設計の問題であり、モックの追加ではなくコード構造の改善で解決する。
+
+- 純粋関数を優先し、副作用は関数の境界に押し出す
+- バリデーション・データ変換・永続化は別関数に分離する
+- コンポーネントはプレゼンテーションとロジック（hooks）を分離する
+- 依存は引数で渡し、テスト時に差し替え可能にする
+
 ### TDD Workflow (Implementation Phase)
 
 `/kiro/spec-impl` による実装は **テスト駆動** で行う。テスト方針の詳細は `.cursor/skills/nextjs-testing/SKILL.md` に従う。
