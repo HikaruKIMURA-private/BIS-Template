@@ -38,9 +38,13 @@ Next.js App Router ベースのフルスタックアプリケーション。Reac
 
 ### Testing
 
-- **Unit/Integration**: Vitest + Testing Library（jsdom 環境）
-- **Visual**: Storybook 10 + Chromatic
-- **E2E**: Playwright（`e2e/` ディレクトリ、`pnpm e2e` で実行）
+- **方針**: TDD で開発する。プロセスとテスタブルなコード設計は `AGENTS.md` を参照
+- **Unit**: Vitest + Testing Library（jsdom）— `*.test.tsx`
+- **Integration**: Vitest（node + 実DB `postgres_test`）— `*.test.ts`
+  - auth / next/* のみモック。DB はモックしない
+  - DB エラーテストのみモック（`*.error.test.ts`）
+- **Visual**: Storybook 10 + Chromatic（カタログ専用、`pnpm test` から除外）
+- **E2E**: Playwright（`e2e/`）— 認証フロー・ページ遷移・async Server Component
 
 ## Development Environment
 
@@ -55,9 +59,9 @@ Next.js App Router ベースのフルスタックアプリケーション。Reac
 ```bash
 # Dev: pnpm dev
 # Build: pnpm build
-# Test: pnpm test
+# Test (unit/integration): pnpm test
 # E2E: pnpm e2e
-# Storybook: pnpm storybook
+# Storybook (catalog only): pnpm storybook
 # Type Check: pnpm typecheck
 # Lint: pnpm lint (oxlint --fix)
 # Format: pnpm fmt (oxfmt)

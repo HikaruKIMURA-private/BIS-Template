@@ -11,19 +11,44 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { profile } from "@/db/schema";
-import { type ProfileFormData, profileFormSchema } from "../schema";
+import {
+  type ProfileFormData,
+  profileFormSchema,
+  toProfileRecord,
+} from "../schema";
 
-// Server Actionの戻り値の型
 export type FormActionResult =
   | SubmissionResult<string[]>
   | { status: "success"; message: string; value: ProfileFormData };
 
-// Server Action
+export async function upsertProfile(
+  userId: string,
+  record: ReturnType<typeof toProfileRecord>
+) {
+  const existingProfile = await db
+    .select()
+    .from(profile)
+    .where(eq(profile.userId, userId))
+    .limit(1);
+
+  if (existingProfile.length > 0) {
+    await db
+      .update(profile)
+      .set(record)
+      .where(eq(profile.userId, userId));
+  } else {
+    await db.insert(profile).values({
+      id: crypto.randomUUID(),
+      userId,
+      ...record,
+    });
+  }
+}
+
 export async function submitProfileForm(
   _prevState: FormActionResult | undefined,
   formData: FormData
 ): Promise<FormActionResult> {
-  // セッションを取得
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -35,52 +60,18 @@ export async function submitProfileForm(
     } as SubmissionResult<string[]>;
   }
 
-  // conformを使ってフォームデータをパース
   const submission = parseWithZod(formData, {
     schema: profileFormSchema,
   });
 
-  // バリデーションエラーの場合
   if (submission.status !== "success") {
     return submission.reply();
   }
 
-  // バリデーション成功時の処理
-  const { name, gender, birthDate, note, bloodType } =
-    submission.value as ProfileFormData;
+  const record = toProfileRecord(submission.value as ProfileFormData);
 
   try {
-    // 既存のプロフィールを確認
-    const existingProfile = await db
-      .select()
-      .from(profile)
-      .where(eq(profile.userId, session.user.id))
-      .limit(1);
-
-    if (existingProfile.length > 0) {
-      // 更新
-      await db
-        .update(profile)
-        .set({
-          name,
-          gender,
-          birthDate,
-          note: note || null,
-          bloodType: bloodType ?? null,
-        })
-        .where(eq(profile.userId, session.user.id));
-    } else {
-      // 新規作成
-      await db.insert(profile).values({
-        id: crypto.randomUUID(),
-        userId: session.user.id,
-        name,
-        gender,
-        birthDate,
-        note: note || null,
-        bloodType: bloodType ?? null,
-      });
-    }
+    await upsertProfile(session.user.id, record);
   } catch (error) {
     console.error("プロフィール保存エラー:", error);
     return {

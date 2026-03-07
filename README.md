@@ -14,7 +14,7 @@
 | 認証                   | Better Auth                                      |
 | データベース           | PostgreSQL (Supabase)                            |
 | ORM                    | Drizzle ORM                                      |
-| テスト                 | Vitest (Unit), storybook(結合), Playwright (E2E) |
+| テスト                 | Vitest (Unit/Integration), Playwright (E2E)      |
 | コンポーネントカタログ | Storybook                                        |
 | Lint/Format            | oxlint, oxfmt                                    |
 | CI/CD                  | GitHub Actions, Chromatic                        |
@@ -136,13 +136,19 @@ pnpm dev
 
 ### テスト・品質
 
-| コマンド         | 説明                  |
-| ---------------- | --------------------- |
-| `pnpm typecheck` | TypeScript 型チェック |
-| `pnpm lint`      | lint                  |
-| `pnpm fmt`       | format                |
-| `pnpm test`      | Unit テスト実行       |
-| `pnpm e2e`       | E2E テスト実行        |
+| コマンド                       | 説明                                            | 前提条件         |
+| ------------------------------ | ----------------------------------------------- | ---------------- |
+| `pnpm typecheck`               | TypeScript 型チェック                           |                  |
+| `pnpm lint`                    | lint                                            |                  |
+| `pnpm fmt`                     | format                                          |                  |
+| `pnpm test`                    | Unit + Integration テスト実行                   | `pnpm db:start`  |
+| `pnpm test --project=unit`     | Unit テストのみ実行（DB 不要）                  |                  |
+| `pnpm test --project=integration` | Integration テストのみ実行（実 DB 接続）     | `pnpm db:start`  |
+| `pnpm e2e`                     | E2E テスト実行                                  | `pnpm db:start` + `pnpm build` |
+
+> **Integration テストの注意**: `pnpm test` は Supabase ローカル DB（Docker）への接続が必要です。
+> テスト用 DB (`postgres_test`) は `vitest.global-setup.ts` により自動作成・マイグレーションされるため、手動操作は不要です。
+> DB 不要の Unit テストだけを実行したい場合は `pnpm test --project=unit` を使ってください。
 
 ## 品質管理
 
@@ -156,17 +162,18 @@ pnpm typecheck
 
 # Lint/Format
 pnpm lint
-pnpm format
+pnpm fmt
 
-# Unit テスト
+# Unit + Integration テスト（Supabase 起動が必要）
 pnpm test
 ```
 
 ### CI で自動検証される項目
 
 - TypeScript 型チェック
-- lint
-- Unit テスト（Vitest）
+- Lint / Format
+- Unit テスト（Vitest, jsdom）
+- Integration テスト（Vitest, 実 DB 接続）
 - E2E テスト（Playwright）
 - Chromatic（Visual Regression テスト）
 

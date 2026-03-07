@@ -1,60 +1,50 @@
-// https://vitejs.dev/config/
-import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import react from "@vitejs/plugin-react";
-import { playwright } from "@vitest/browser-playwright";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vitest/config";
+
 const dirname =
   typeof __dirname !== "undefined"
     ? __dirname
     : path.dirname(fileURLToPath(import.meta.url));
 
-// More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   test: {
-    environment: "jsdom",
     projects: [
-      // 通常のテスト用プロジェクト（.test.tsx ファイル用）
       {
-        resolve: {
-          alias: {
-            "@": path.resolve(dirname, "."),
-          },
-        },
         test: {
           name: "unit",
-          include: ["**/*.test.{ts,tsx}"],
-          exclude: ["**/node_modules/**", "**/dist/**", "**/.storybook/**"],
           environment: "jsdom",
+          include: ["**/*.test.tsx"],
+          exclude: [
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/.storybook/**",
+            "**/e2e/**",
+          ],
           setupFiles: ["./vitest.setup.ts"],
+          alias: { "@": path.resolve(dirname, ".") },
         },
       },
-      // Storybook用プロジェクト（.stories.ts ファイル用）
       {
-        extends: true,
-        plugins: [
-          // The plugin will run tests for the stories defined in your Storybook config
-          // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
-          storybookTest({
-            configDir: path.join(dirname, ".storybook"),
-          }),
-        ],
         test: {
-          name: "storybook",
-          browser: {
-            enabled: true,
-            headless: true,
-            provider: playwright({}),
-            instances: [
-              {
-                browser: "chromium",
-              },
-            ],
+          name: "integration",
+          environment: "node",
+          include: ["**/*.test.ts"],
+          exclude: [
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/.storybook/**",
+            "**/e2e/**",
+          ],
+          env: {
+            DATABASE_URL:
+              "postgresql://postgres:postgres@127.0.0.1:54322/postgres_test",
           },
-          setupFiles: [".storybook/vitest.setup.ts"],
+          globalSetup: ["./vitest.global-setup.ts"],
+          alias: { "@": path.resolve(dirname, ".") },
         },
       },
     ],
