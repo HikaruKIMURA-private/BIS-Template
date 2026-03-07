@@ -36,26 +36,15 @@ Next.js App Router ベースのフルスタックアプリケーション。Reac
 - OxLint（`oxlint`）による高速リント + OxFmt（`oxfmt`）による自動整形
 - `.oxlintrc.json` でルール設定、`.oxfmtrc.json` でフォーマット設定
 
-### Testability
-
-テスタブルなコードを書くことを最優先とする。
-
-- **純粋関数を優先**: 同じ入力に対して同じ出力を返す関数を基本単位とする。副作用（DB・外部 API・ファイル I/O）は関数の境界に押し出す
-- **依存は引数で渡す**: グローバル状態やモジュールスコープの変数に直接依存しない。テスト時に差し替え可能な設計にする
-- **小さな関数に分割**: 1つの関数が複数の責務を持たない。バリデーション・変換・永続化は別関数に分離する
-- **コンポーネントはプレゼンテーションとロジックを分離**: hooks にロジックを切り出し、コンポーネントは表示に専念する
-
 ### Testing
 
-- **開発手法**: TDD（テスト駆動開発）。実装の前にテストを書く。詳細は `.cursor/skills/nextjs-testing/SKILL.md`
-- **Unit**: Vitest + Testing Library（jsdom）。`*.test.tsx` で Client Component をテスト
-- **Integration**: Vitest（node + 実DB）。`*.test.ts` で Server Action / Data Fetching を実 PostgreSQL (postgres_test) でテスト
-  - auth / `next/headers` / `next/navigation` / `next/cache` のみモック。DB はモックしない
-  - テスト用 DB は `vitest.global-setup.ts` で自動作成・マイグレーション
-  - DB エラーのテストのみモック（`*.error.test.ts`）
-  - async Server Component は vitest 非対応のため E2E でカバー
-- **Visual**: Storybook 10 + Chromatic（コンポーネントカタログ専用、`pnpm test` からは除外）
-- **E2E**: Playwright（`e2e/` ディレクトリ、`pnpm e2e` で実行。認証フロー・ページ遷移・async Server Component）
+- **方針**: TDD で開発する。プロセスとテスタブルなコード設計は `AGENTS.md` を参照
+- **Unit**: Vitest + Testing Library（jsdom）— `*.test.tsx`
+- **Integration**: Vitest（node + 実DB `postgres_test`）— `*.test.ts`
+  - auth / next/* のみモック。DB はモックしない
+  - DB エラーテストのみモック（`*.error.test.ts`）
+- **Visual**: Storybook 10 + Chromatic（カタログ専用、`pnpm test` から除外）
+- **E2E**: Playwright（`e2e/`）— 認証フロー・ページ遷移・async Server Component
 
 ## Development Environment
 

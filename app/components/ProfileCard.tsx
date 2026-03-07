@@ -1,24 +1,14 @@
 "use client";
 
-import type { ProfileData } from "../schema";
-
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import {
+  type ProfileData,
+  bloodTypeLabel,
+  genderLabel,
+} from "../schema";
 import { UserForm } from "./UserForm";
-
-const genderLabel: Record<string, string> = {
-  male: "男性",
-  female: "女性",
-  other: "その他",
-};
-
-const bloodTypeLabel: Record<string, string> = {
-  A: "A型",
-  B: "B型",
-  O: "O型",
-  AB: "AB型",
-};
 
 export function ProfileCard({ profile }: { profile: ProfileData }) {
   const [isEditing, setIsEditing] = useState(false);

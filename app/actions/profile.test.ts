@@ -4,7 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { db } from "@/db";
 import { profile, user } from "@/db/schema";
-import { submitProfileForm } from "./profile";
+import { toProfileRecord } from "../schema";
+import { submitProfileForm, upsertProfile } from "./profile";
 
 // --- 外部サービスのモック（auth / Next.js API のみ） ---
 
@@ -68,7 +69,121 @@ async function seedTestUser() {
   });
 }
 
-// --- テスト ---
+// --- 純粋関数テスト ---
+
+describe("toProfileRecord", () => {
+  it("基本的なデータを変換する", () => {
+    const result = toProfileRecord({
+      name: "山田太郎",
+      gender: "male",
+      birthDate: "1990-01-15",
+      note: "テスト",
+      bloodType: "A",
+    });
+
+    expect(result).toEqual({
+      name: "山田太郎",
+      gender: "male",
+      birthDate: "1990-01-15",
+      note: "テスト",
+      bloodType: "A",
+    });
+  });
+
+  it("空文字の note を null に変換する", () => {
+    const result = toProfileRecord({
+      name: "山田太郎",
+      gender: "male",
+      birthDate: "1990-01-15",
+      note: "",
+      bloodType: "A",
+    });
+
+    expect(result.note).toBeNull();
+  });
+
+  it("undefined の note を null に変換する", () => {
+    const result = toProfileRecord({
+      name: "山田太郎",
+      gender: "male",
+      birthDate: "1990-01-15",
+      bloodType: "A",
+    });
+
+    expect(result.note).toBeNull();
+  });
+
+  it("undefined の bloodType を null に変換する", () => {
+    const result = toProfileRecord({
+      name: "山田太郎",
+      gender: "male",
+      birthDate: "1990-01-15",
+      note: "テスト",
+    });
+
+    expect(result.bloodType).toBeNull();
+  });
+});
+
+// --- DB 操作テスト ---
+
+describe("upsertProfile", () => {
+  beforeEach(async () => {
+    await cleanupTestData();
+    await seedTestUser();
+  });
+
+  afterEach(async () => {
+    await cleanupTestData();
+  });
+
+  it("プロフィールが存在しない場合に新規作成する", async () => {
+    await upsertProfile(TEST_USER_ID, {
+      name: "山田太郎",
+      gender: "male",
+      birthDate: "1990-01-15",
+      note: null,
+      bloodType: "A",
+    });
+
+    const rows = await db
+      .select()
+      .from(profile)
+      .where(eq(profile.userId, TEST_USER_ID));
+    expect(rows).toHaveLength(1);
+    expect(rows[0].name).toBe("山田太郎");
+    expect(rows[0].bloodType).toBe("A");
+  });
+
+  it("プロフィールが存在する場合に更新する", async () => {
+    await db.insert(profile).values({
+      id: "test-profile-upsert",
+      userId: TEST_USER_ID,
+      name: "旧名前",
+      gender: "female",
+      birthDate: "2000-06-01",
+    });
+
+    await upsertProfile(TEST_USER_ID, {
+      name: "新名前",
+      gender: "male",
+      birthDate: "1990-01-15",
+      note: "更新",
+      bloodType: "B",
+    });
+
+    const rows = await db
+      .select()
+      .from(profile)
+      .where(eq(profile.userId, TEST_USER_ID));
+    expect(rows).toHaveLength(1);
+    expect(rows[0].name).toBe("新名前");
+    expect(rows[0].note).toBe("更新");
+    expect(rows[0].bloodType).toBe("B");
+  });
+});
+
+// --- オーケストレーション層テスト ---
 
 describe("submitProfileForm", () => {
   beforeEach(async () => {

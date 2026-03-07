@@ -5,29 +5,26 @@ import { parseWithZod } from "@conform-to/zod/v3";
 import { useActionState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { submitProfileForm } from "../actions/profile";
-import { type ProfileData, profileFormSchema } from "../schema";
+import type { FormActionResult } from "../actions/profile";
+import { submitProfileForm as defaultAction } from "../actions/profile";
+import {
+  BLOOD_TYPE_OPTIONS,
+  GENDER_OPTIONS,
+  type ProfileData,
+  profileFormSchema,
+} from "../schema";
 
-type UserFormProps = {
-  defaultProfile?: ProfileData;
-  onCancel?: () => void;
-};
+type ProfileFormAction = (
+  prevState: FormActionResult | undefined,
+  formData: FormData
+) => FormActionResult | Promise<FormActionResult>;
 
-export function UserForm({ defaultProfile, onCancel }: UserFormProps) {
-  // 性別の選択肢
-  const genderOptions: Array<{ value: string; label: string }> = [
-    { value: "male", label: "男性" },
-    { value: "female", label: "女性" },
-  ];
-
-  const bloodTypeOptions: Array<{ value: string; label: string }> = [
-    { value: "A", label: "A型" },
-    { value: "B", label: "B型" },
-    { value: "O", label: "O型" },
-    { value: "AB", label: "AB型" },
-  ];
+function useProfileForm(
+  action: ProfileFormAction,
+  defaultProfile?: ProfileData
+) {
   const [lastResult, formAction, isPending] = useActionState(
-    submitProfileForm,
+    action,
     undefined
   );
 
@@ -50,6 +47,23 @@ export function UserForm({ defaultProfile, onCancel }: UserFormProps) {
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",
   });
+
+  return { form, fields, formAction, isPending, lastResult, isEditing };
+}
+
+type UserFormProps = {
+  defaultProfile?: ProfileData;
+  onCancel?: () => void;
+  action?: ProfileFormAction;
+};
+
+export function UserForm({
+  defaultProfile,
+  onCancel,
+  action = defaultAction,
+}: UserFormProps) {
+  const { form, fields, formAction, isPending, lastResult, isEditing } =
+    useProfileForm(action, defaultProfile);
 
   return (
     <div className="w-full max-w-md rounded-lg border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
@@ -94,7 +108,7 @@ export function UserForm({ defaultProfile, onCancel }: UserFormProps) {
               性別
             </legend>
             <div className="flex gap-4">
-              {genderOptions.map((option) => (
+              {GENDER_OPTIONS.map((option) => (
                 <label key={option.value} className="flex items-center gap-2">
                   <input
                     {...getInputProps(fields.gender, {
@@ -128,7 +142,7 @@ export function UserForm({ defaultProfile, onCancel }: UserFormProps) {
               血液型
             </legend>
             <div className="flex gap-4">
-              {bloodTypeOptions.map((option) => (
+              {BLOOD_TYPE_OPTIONS.map((option) => (
                 <label key={option.value} className="flex items-center gap-2">
                   <input
                     {...getInputProps(fields.bloodType, {

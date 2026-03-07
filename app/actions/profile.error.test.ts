@@ -1,11 +1,13 @@
 import type { SubmissionResult } from "@conform-to/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { FormActionResult } from "./profile";
+import { submitProfileForm } from "./profile";
 
-// DB エラーのテストはモックでのみ再現可能なため、ロンドン学派で維持する
+const { mockGetSession, mockFrom } = vi.hoisted(() => ({
+  mockGetSession: vi.fn(),
+  mockFrom: vi.fn(),
+}));
 
-const mockGetSession = vi.fn();
 vi.mock("@/auth", () => ({
   auth: {
     api: {
@@ -26,28 +28,18 @@ vi.mock("next/cache", () => ({
   revalidatePath: vi.fn(),
 }));
 
-const mockSelect = vi.fn();
 vi.mock("@/db", () => ({
   db: {
-    select: (...args: unknown[]) => mockSelect(...args),
+    select: vi.fn().mockReturnValue({ from: mockFrom }),
     insert: vi.fn(),
     update: vi.fn(),
   },
 }));
 
-vi.mock("@/db/schema", () => ({
-  profile: {
-    userId: "user_id",
-    name: "name",
-    gender: "gender",
-    birthDate: "birth_date",
-    note: "note",
-    bloodType: "blood_type",
-  },
-}));
+vi.mock("drizzle-orm", () => ({ eq: vi.fn() }));
 
-vi.mock("drizzle-orm", () => ({
-  eq: vi.fn((col, val) => ({ col, val })),
+vi.mock("@/db/schema", () => ({
+  profile: { userId: "userId" },
 }));
 
 function createFormData(data: Record<string, string>): FormData {
@@ -58,31 +50,34 @@ function createFormData(data: Record<string, string>): FormData {
   return fd;
 }
 
-describe("submitProfileForm - エラーハンドリング", () => {
+const validFormData = {
+  name: "山田太郎",
+  gender: "male",
+  birthDate: "1990-01-15",
+  note: "",
+};
+
+describe("submitProfileForm（DBエラー）", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGetSession.mockResolvedValue({ user: { id: "test-user" } });
   });
 
-  it("DB エラー時にエラーレスポンスを返す", async () => {
-    mockGetSession.mockResolvedValue({ user: { id: "user-1" } });
-    mockSelect.mockReturnValue({
-      from: vi.fn().mockReturnValue({
-        where: vi.fn().mockReturnValue({
-          limit: vi.fn().mockRejectedValue(new Error("DB connection error")),
-        }),
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("DB操作が失敗した場合にエラーメッセージを返す", async () => {
+    mockFrom.mockReturnValue({
+      where: vi.fn().mockReturnValue({
+        limit: vi.fn().mockRejectedValue(new Error("DB connection failed")),
       }),
     });
 
-    const { submitProfileForm } = await import("./profile");
-    const result = (await submitProfileForm(
+    const result = await submitProfileForm(
       undefined,
-      createFormData({
-        name: "山田太郎",
-        gender: "male",
-        birthDate: "1990-01-15",
-        note: "",
-      })
-    )) as FormActionResult;
+      createFormData(validFormData)
+    );
 
     const errorResult = result as SubmissionResult<string[]>;
     expect(errorResult.status).toBe("error");
