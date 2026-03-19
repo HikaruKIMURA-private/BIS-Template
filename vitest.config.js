@@ -32,6 +32,7 @@ export default defineConfig({
         test: {
           name: "integration",
           environment: "node",
+          fileParallelism: false,
           include: ["**/*.test.ts"],
           exclude: [
             "**/node_modules/**",

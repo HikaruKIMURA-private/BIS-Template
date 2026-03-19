@@ -5,7 +5,23 @@ description: Next.js App Router プロジェクトのテスト実装ガイド。
 
 # Next.js テスト実装ガイド
 
-> TDD ワークフロー（テストケース列挙 → テスト実装 → プロダクションコード → リファクタリング）とテスタブルなコード設計は `AGENTS.md` を参照。
+> TDD ワークフロー、テスト哲学（4つの柱）、テストピラミッドの原則は `AGENTS.md` を参照。
+
+## テストレイヤーの判断フロー
+
+1. まず **単体テスト** で書けないか検討する（デフォルト）
+2. DB を含む依存関係を通すハッピーパス、または単体で再現困難なレアケース → **結合テスト**
+3. Vitest 結合テストでカバー済みなら Playwright E2E は **作らない**
+4. 画面遷移・認証フローなど Vitest では検証不可能なもののみ → **E2E**
+
+**4つの柱とレイヤーの対応:**
+
+| 柱 | 単体テスト | 結合テスト | E2E |
+| --- | --- | --- | --- |
+| リグレッション保護 | ○ 多数のケースで広くカバー | ◎ 実依存で高い信頼性 | ◎ 本番同等の信頼性 |
+| リファクタリング耐性 | ◎ 振る舞いのみ検証 | ◎ 実データで検証 | ◎ ユーザー視点で検証 |
+| 迅速なフィードバック | ◎ ミリ秒〜秒 | ○ 秒〜十秒 | △ 十秒〜分 |
+| 保守性 | ◎ スコープが小さい | ○ セットアップがやや複雑 | △ 壊れやすく修正コスト高 |
 
 ## レイヤー構成
 
@@ -33,11 +49,12 @@ description: Next.js App Router プロジェクトのテスト実装ガイド。
 | 複数テーブルにまたがる整合性 | **採用** — 実 DB で FK・制約を含めて検証 | 不適 — モックでは制約違反を検出できない |
 | async Server Component の描画 | どちらも不適 — **E2E（Playwright）を使う** | — |
 
-迷ったときの原則:
-- **データが正しく永続化されるか** を確かめたい → 古典学派
-- **ユーザーに何が見えるか** を確かめたい → ロンドン学派
-- **壊れたときにどうなるか** を確かめたい → ロンドン学派（エラー注入）
-- **画面遷移を含む一連のフロー** を確かめたい → E2E
+迷ったときの原則（4つの柱を踏まえて）:
+- **データが正しく永続化されるか** を確かめたい → 古典学派（リグレッション保護◎）
+- **ユーザーに何が見えるか** を確かめたい → ロンドン学派（フィードバック速度◎）
+- **壊れたときにどうなるか** を確かめたい → ロンドン学派・エラー注入（リグレッション保護のレアケース）
+- **画面遷移を含む一連のフロー** を確かめたい → E2E（Vitest 結合テストでカバー不可の場合のみ）
+- いずれの場合も **リファクタリング耐性を最大化** する: 実装の詳細ではなく振る舞いを検証する
 
 ## 学派別パターン一覧
 
@@ -111,17 +128,17 @@ vi.mock("drizzle-orm", () => ({ eq: vi.fn() }));
 
 ## モック早見表
 
-| 対象 | 手法 | 使用場面 |
-| --- | --- | --- |
-| Server Action | `vi.mock("../actions/foo")` | Client Component |
-| `useActionState` | `vi.mock("react")` 部分モック | Client Component |
-| `@/auth` | `vi.mock("@/auth")` | Server Action (古典) |
-| `next/headers` | `vi.mock("next/headers")` | Server Action (古典) |
-| `next/navigation` | `vi.mock("next/navigation")` — redirect は throw | Server Action (古典) |
-| `next/cache` | `vi.mock("next/cache")` | Server Action (古典) |
-| `next-themes` | `vi.mock("next-themes")` | テーマ Component |
-| DB (`@/db`) | **モックしない** | 古典学派テスト全般 |
-| DB (`@/db`) | `vi.mock("@/db")` | `*.error.test.ts` のみ |
+| 対象 | 分類 | 手法 | 使用場面 |
+| --- | --- | --- | --- |
+| DB (`@/db`) | 共有依存 | **モックしない**（順次実行で隔離） | `*.test.ts` 全般 |
+| DB (`@/db`) | 共有依存 | `vi.mock("@/db")` | `*.error.test.ts` のみ（エラー注入） |
+| `@/auth` | プロセス外依存 | `vi.mock("@/auth")` | Server Action (古典) |
+| `next/headers` | プロセス外依存 | `vi.mock("next/headers")` | Server Action (古典) |
+| `next/navigation` | プロセス外依存 | `vi.mock("next/navigation")` — redirect は throw | Server Action (古典) |
+| `next/cache` | プロセス外依存 | `vi.mock("next/cache")` | Server Action (古典) |
+| Server Action | プライベート依存 | `vi.mock("../actions/foo")` | Client Component（jsdom で実行不可） |
+| `useActionState` | プライベート依存 | `vi.mock("react")` 部分モック | Client Component |
+| `next-themes` | プロセス外依存 | `vi.mock("next-themes")` | テーマ Component |
 
 ## テスト用 DB
 
@@ -129,6 +146,8 @@ vi.mock("drizzle-orm", () => ({ eq: vi.fn() }));
 - `vitest.global-setup.ts` で Docker 経由自動作成 + Drizzle マイグレーション
 - `vitest.config.js` の `env` で `DATABASE_URL` を注入
 - テストデータは固定 ID + `beforeEach`/`afterEach` でテストデータのみクリーンアップ
+- DB を使うテスト（`*.test.ts`）は `fileParallelism: false` で全て順次実行し、テストケース間の干渉を防ぐ
+- DB モックは `*.error.test.ts`（エラー注入）のみ許容。それ以外で DB モックが必要になった場合、まずテスト設計の見直しを検討する
 
 ## 禁止パターン
 
