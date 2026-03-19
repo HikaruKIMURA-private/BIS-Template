@@ -128,17 +128,17 @@ vi.mock("drizzle-orm", () => ({ eq: vi.fn() }));
 
 ## モック早見表
 
-| 対象 | 手法 | 使用場面 |
-| --- | --- | --- |
-| Server Action | `vi.mock("../actions/foo")` | Client Component |
-| `useActionState` | `vi.mock("react")` 部分モック | Client Component |
-| `@/auth` | `vi.mock("@/auth")` | Server Action (古典) |
-| `next/headers` | `vi.mock("next/headers")` | Server Action (古典) |
-| `next/navigation` | `vi.mock("next/navigation")` — redirect は throw | Server Action (古典) |
-| `next/cache` | `vi.mock("next/cache")` | Server Action (古典) |
-| `next-themes` | `vi.mock("next-themes")` | テーマ Component |
-| DB (`@/db`) | **モックしない** | 古典学派テスト全般 |
-| DB (`@/db`) | `vi.mock("@/db")` | `*.error.test.ts` のみ |
+| 対象 | 分類 | 手法 | 使用場面 |
+| --- | --- | --- | --- |
+| DB (`@/db`) | 共有依存 | **モックしない**（順次実行で隔離） | `*.test.ts` 全般 |
+| DB (`@/db`) | 共有依存 | `vi.mock("@/db")` | `*.error.test.ts` のみ（エラー注入） |
+| `@/auth` | プロセス外依存 | `vi.mock("@/auth")` | Server Action (古典) |
+| `next/headers` | プロセス外依存 | `vi.mock("next/headers")` | Server Action (古典) |
+| `next/navigation` | プロセス外依存 | `vi.mock("next/navigation")` — redirect は throw | Server Action (古典) |
+| `next/cache` | プロセス外依存 | `vi.mock("next/cache")` | Server Action (古典) |
+| Server Action | プライベート依存 | `vi.mock("../actions/foo")` | Client Component（jsdom で実行不可） |
+| `useActionState` | プライベート依存 | `vi.mock("react")` 部分モック | Client Component |
+| `next-themes` | プロセス外依存 | `vi.mock("next-themes")` | テーマ Component |
 
 ## テスト用 DB
 
@@ -146,6 +146,8 @@ vi.mock("drizzle-orm", () => ({ eq: vi.fn() }));
 - `vitest.global-setup.ts` で Docker 経由自動作成 + Drizzle マイグレーション
 - `vitest.config.js` の `env` で `DATABASE_URL` を注入
 - テストデータは固定 ID + `beforeEach`/`afterEach` でテストデータのみクリーンアップ
+- DB を使うテスト（`*.test.ts`）は `fileParallelism: false` で全て順次実行し、テストケース間の干渉を防ぐ
+- DB モックは `*.error.test.ts`（エラー注入）のみ許容。それ以外で DB モックが必要になった場合、まずテスト設計の見直しを検討する
 
 ## 禁止パターン
 
