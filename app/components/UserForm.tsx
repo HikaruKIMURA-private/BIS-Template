@@ -1,11 +1,12 @@
 "use client";
 
+import type { FormActionResult } from "../actions/profile";
+
 import { getInputProps, getTextareaProps, useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod/v3";
 import { useActionState } from "react";
 
 import { Button } from "@/components/ui/button";
-import type { FormActionResult } from "../actions/profile";
 import { submitProfileForm as defaultAction } from "../actions/profile";
 import {
   BLOOD_TYPE_OPTIONS,
@@ -23,10 +24,7 @@ function useProfileForm(
   action: ProfileFormAction,
   defaultProfile?: ProfileData
 ) {
-  const [lastResult, formAction, isPending] = useActionState(
-    action,
-    undefined
-  );
+  const [lastResult, formAction, isPending] = useActionState(action, undefined);
 
   const isEditing = !!defaultProfile;
 

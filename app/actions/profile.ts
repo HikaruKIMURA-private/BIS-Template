@@ -32,10 +32,7 @@ export async function upsertProfile(
     .limit(1);
 
   if (existingProfile.length > 0) {
-    await db
-      .update(profile)
-      .set(record)
-      .where(eq(profile.userId, userId));
+    await db.update(profile).set(record).where(eq(profile.userId, userId));
   } else {
     await db.insert(profile).values({
       id: crypto.randomUUID(),

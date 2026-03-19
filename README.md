@@ -4,22 +4,22 @@
 
 ## 技術スタック
 
-| カテゴリ               | 技術                                             |
-| ---------------------- | ------------------------------------------------ |
-| フレームワーク         | Next.js 16 (App Router)                          |
-| 言語                   | TypeScript                                       |
-| スタイリング           | Tailwind CSS v4                                  |
-| UI コンポーネント      | Radix UI, shadcn/ui                              |
-| フォーム               | Conform + Zod                                    |
-| 認証                   | Better Auth                                      |
-| データベース           | PostgreSQL (Supabase)                            |
-| ORM                    | Drizzle ORM                                      |
-| テスト                 | Vitest (Unit/Integration), Playwright (E2E)      |
-| コンポーネントカタログ | Storybook                                        |
-| Lint/Format            | oxlint, oxfmt                                    |
-| CI/CD                  | GitHub Actions, Chromatic                        |
-| ホスティング(インフラ) | vercel                                           |
-| 仕様書駆動ツール       | cc-sdd                                           |
+| カテゴリ               | 技術                                        |
+| ---------------------- | ------------------------------------------- |
+| フレームワーク         | Next.js 16 (App Router)                     |
+| 言語                   | TypeScript                                  |
+| スタイリング           | Tailwind CSS v4                             |
+| UI コンポーネント      | Radix UI, shadcn/ui                         |
+| フォーム               | Conform + Zod                               |
+| 認証                   | Better Auth                                 |
+| データベース           | PostgreSQL (Supabase)                       |
+| ORM                    | Drizzle ORM                                 |
+| テスト                 | Vitest (Unit/Integration), Playwright (E2E) |
+| コンポーネントカタログ | Storybook                                   |
+| Lint/Format            | oxlint, oxfmt                               |
+| CI/CD                  | GitHub Actions, Chromatic                   |
+| ホスティング(インフラ) | vercel                                      |
+| 仕様書駆動ツール       | cc-sdd                                      |
 
 ## 必要なツール
 
@@ -136,15 +136,15 @@ pnpm dev
 
 ### テスト・品質
 
-| コマンド                       | 説明                                            | 前提条件         |
-| ------------------------------ | ----------------------------------------------- | ---------------- |
-| `pnpm typecheck`               | TypeScript 型チェック                           |                  |
-| `pnpm lint`                    | lint                                            |                  |
-| `pnpm fmt`                     | format                                          |                  |
-| `pnpm test`                    | Unit + Integration テスト実行                   | `pnpm db:start`  |
-| `pnpm test --project=unit`     | Unit テストのみ実行（DB 不要）                  |                  |
-| `pnpm test --project=integration` | Integration テストのみ実行（実 DB 接続）     | `pnpm db:start`  |
-| `pnpm e2e`                     | E2E テスト実行                                  | `pnpm db:start` + `pnpm build` |
+| コマンド                          | 説明                                     | 前提条件                       |
+| --------------------------------- | ---------------------------------------- | ------------------------------ |
+| `pnpm typecheck`                  | TypeScript 型チェック                    |                                |
+| `pnpm lint`                       | lint                                     |                                |
+| `pnpm fmt`                        | format                                   |                                |
+| `pnpm test`                       | Unit + Integration テスト実行            | `pnpm db:start`                |
+| `pnpm test --project=unit`        | Unit テストのみ実行（DB 不要）           |                                |
+| `pnpm test --project=integration` | Integration テストのみ実行（実 DB 接続） | `pnpm db:start`                |
+| `pnpm e2e`                        | E2E テスト実行                           | `pnpm db:start` + `pnpm build` |
 
 > **Integration テストの注意**: `pnpm test` は Supabase ローカル DB（Docker）への接続が必要です。
 > テスト用 DB (`postgres_test`) は `vitest.global-setup.ts` により自動作成・マイグレーションされるため、手動操作は不要です。

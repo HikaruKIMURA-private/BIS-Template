@@ -3,11 +3,7 @@
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  type ProfileData,
-  bloodTypeLabel,
-  genderLabel,
-} from "../schema";
+import { type ProfileData, bloodTypeLabel, genderLabel } from "../schema";
 import { UserForm } from "./UserForm";
 
 export function ProfileCard({ profile }: { profile: ProfileData }) {

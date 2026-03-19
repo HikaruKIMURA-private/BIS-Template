@@ -27,9 +27,7 @@ test.describe.serial("プロフィール編集", () => {
     await page.getByRole("button", { name: "保存" }).waitFor();
 
     await page.getByRole("textbox", { name: "名前" }).fill("更新ユーザー");
-    await page
-      .getByRole("radio", { name: "B型", exact: true })
-      .check();
+    await page.getByRole("radio", { name: "B型", exact: true }).check();
     await page.getByRole("textbox", { name: "備考" }).fill("更新済み");
     await page.getByRole("button", { name: "保存" }).click();
 

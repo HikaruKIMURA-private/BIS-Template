@@ -1,20 +1,22 @@
+import type { FormActionResult } from "../actions/profile";
+
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { FormActionResult } from "../actions/profile";
 import { UserForm } from "./UserForm";
 
 vi.mock("../actions/profile", () => ({
   submitProfileForm: vi.fn(),
 }));
 
-const mockAction = vi.fn<
-  (
-    prevState: FormActionResult | undefined,
-    formData: FormData
-  ) => FormActionResult
->();
+const mockAction =
+  vi.fn<
+    (
+      prevState: FormActionResult | undefined,
+      formData: FormData
+    ) => FormActionResult
+  >();
 
 describe("UserForm", () => {
   beforeEach(() => {
@@ -141,9 +143,7 @@ describe("UserForm", () => {
       await user.click(screen.getByRole("button", { name: "保存" }));
 
       await waitFor(() => {
-        expect(
-          screen.getByText("性別を選択してください")
-        ).toBeInTheDocument();
+        expect(screen.getByText("性別を選択してください")).toBeInTheDocument();
       });
       expect(screen.getByText("生年月日は必須です")).toBeInTheDocument();
       expect(screen.queryByText("名前は必須です")).not.toBeInTheDocument();
