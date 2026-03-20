@@ -278,12 +278,33 @@ Error tracking, logging, and health monitoring implementation.
 
 ## Testing Strategy
 
-### Default sections (adapt names/sections to fit the domain)
+_Implementation uses **TDD** in the implementation phase (`/kiro/spec-impl`). Philosophy (four pillars, test pyramid, classical-school “unit” as one behavior, dependency/mock stance) lives in [`AGENTS.md`](../../../../AGENTS.md) (**Test Philosophy**, **TDD Workflow**). Tooling, file naming (`*.test.ts` / `*.test.tsx` / `e2e`), layer decision flow, and mock cheat sheet live in [`.cursor/skills/nextjs-testing/SKILL.md`](../../../../.cursor/skills/nextjs-testing/SKILL.md). Keep this section feature-specific; do not paste full doctrine here._
 
-- Unit Tests: 3–5 items from core functions/modules (e.g., auth methods, subscription logic)
-- Integration Tests: 3–5 cross-component flows (e.g., webhook handling, notifications)
-- E2E/UI Tests (if applicable): 3–5 critical user paths (e.g., forms, dashboards)
-- Performance/Load (if applicable): 3–4 items (e.g., concurrency, high-volume ops)
+_Write specification Markdown in the language configured for this spec (`spec.json.language`), per project guidelines._
+
+### Test layers & scope
+
+- Which layers apply: **unit** (Vitest + Testing Library / jsdom), **integration** (Vitest + real DB / node), **E2E** (Playwright), **Storybook** (visual catalog—no `expect` in play). Follow the **layer decision flow** in SKILL.md.
+- If E2E is included, state why Vitest cannot cover those paths (keep E2E minimal).
+
+_Checklist (adapt counts to complexity):_
+
+- Unit: 3–5 behaviors (e.g., pure logic, client components, form validation)
+- Integration: 3–5 flows (e.g., Server Actions, data layer against real DB)
+- E2E (if applicable): 3–5 critical paths that require a browser (auth, navigation, async RSC)
+- Performance/load (if applicable): 3–4 items
+
+### Observable outcomes
+
+- Primary assertions: **observable results** (return values, DB state after actions, UI text/state, user-visible errors)—not internal structure. Align with **classical school verification** in SKILL.md.
+
+### Dependencies & isolation
+
+- Short summary for this feature: e.g. real DB + sequential runs vs mocks; which **process-out** deps (`next/*`, auth) are mocked. For defaults and tables, defer to SKILL.md—note only exceptions here.
+
+### Traceability (optional)
+
+- Map requirement IDs to test layers, or point to the **Requirements Traceability** section above if already sufficient.
 
 ## Optional Sections (include when relevant)
 
