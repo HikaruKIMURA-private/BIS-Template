@@ -87,6 +87,15 @@ cp .env.example .env.local
 
 `.env.local` を編集し、必要な値を設定してください。
 
+#### Vercel / Supabase 本番でのビルド（`drizzle-kit migrate`）
+
+`pnpm build` は先にマイグレーションを実行します。Supabase の **Transaction pooler**（例: ポート `6543`）経由だと `CREATE SCHEMA` などの DDL が失敗することがあります。
+
+1. **Vercel の Environment Variables** に、Supabase の **Direct connection**（通常ポート **5432**）の接続文字列を `DATABASE_URL_MIGRATE` として追加する。
+2. アプリのクエリ用には従来どおり **`DATABASE_URL`** に **Pooler**（`6543` など）を設定してよい（サーバーレス向け）。
+
+ローカルでは `DATABASE_URL` だけで足りる（`DATABASE_URL_MIGRATE` は不要）。
+
 ### 5. データベースのセットアップ
 
 ```bash
