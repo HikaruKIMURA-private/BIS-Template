@@ -10,6 +10,10 @@ vi.mock("../actions/profile", () => ({
   submitProfileForm: vi.fn(),
 }));
 
+vi.mock("./ProfileAvatarSection", () => ({
+  ProfileAvatarSection: () => null,
+}));
+
 const mockAction =
   vi.fn<
     (
@@ -111,6 +115,8 @@ describe("UserForm", () => {
           birthDate: "1990-01-15",
           note: null,
           bloodType: null,
+          avatarUrl: null,
+          oauthImageUrl: null,
         }}
       />
     );

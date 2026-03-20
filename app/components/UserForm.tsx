@@ -14,6 +14,7 @@ import {
   type ProfileData,
   profileFormSchema,
 } from "../schema";
+import { ProfileAvatarSection } from "./ProfileAvatarSection";
 
 type ProfileFormAction = (
   prevState: FormActionResult | undefined,
@@ -68,6 +69,8 @@ export function UserForm({
       <h2 className="mb-6 text-2xl font-bold text-zinc-900 dark:text-zinc-100">
         {isEditing ? "プロフィール編集" : "プロフィール登録"}
       </h2>
+
+      <ProfileAvatarSection enabled={isEditing} />
 
       <form
         id={form.id}

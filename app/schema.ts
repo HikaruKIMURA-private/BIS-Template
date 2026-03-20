@@ -55,6 +55,10 @@ export type ProfileData = {
   birthDate: string;
   note: string | null;
   bloodType: string | null;
+  /** アプリ管理のプロフィール画像 URL（優先表示） */
+  avatarUrl: string | null;
+  /** OAuth 等の user.image（フォールバック） */
+  oauthImageUrl: string | null;
 };
 
 export function toProfileRecord(data: ProfileFormData) {
