@@ -93,6 +93,7 @@ export const profile = pgTable(
     birthDate: date("birth_date").notNull(),
     note: text("note"),
     bloodType: text("blood_type"),
+    preferredLocale: text("preferred_locale"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
