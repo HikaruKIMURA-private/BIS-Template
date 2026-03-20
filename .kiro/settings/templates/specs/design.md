@@ -276,35 +276,35 @@ Include Mermaid flowchart only for complex error scenarios with business workflo
 
 Error tracking, logging, and health monitoring implementation.
 
-## Testing Strategy
+## テスト戦略
 
-_Implementation uses **TDD** in the implementation phase (`/kiro/spec-impl`). Philosophy (four pillars, test pyramid, classical-school “unit” as one behavior, dependency/mock stance) lives in [`AGENTS.md`](../../../../AGENTS.md) (**Test Philosophy**, **TDD Workflow**). Tooling, file naming (`*.test.ts` / `*.test.tsx` / `e2e`), layer decision flow, and mock cheat sheet live in [`.cursor/skills/nextjs-testing/SKILL.md`](../../../../.cursor/skills/nextjs-testing/SKILL.md). Keep this section feature-specific; do not paste full doctrine here._
+_実装フェーズ（`/kiro/spec-impl`）では **TDD** とする。哲学（4 つの柱、テストピラミッド、古典学派における「単体」= 1 振る舞い、依存・モックの考え方）は [`AGENTS.md`](../../../../AGENTS.md)（**Test Philosophy**、**TDD Workflow**）に記載する。ツール、ファイル命名（`*.test.ts` / `*.test.tsx` / `e2e`）、レイヤー判断フロー、モック早見表は [`.cursor/skills/nextjs-testing/SKILL.md`](../../../../.cursor/skills/nextjs-testing/SKILL.md) を参照する。本セクションは機能固有の決定のみに留め、教義の全文は貼らない。_
 
-_Write specification Markdown in the language configured for this spec (`spec.json.language`), per project guidelines._
+_仕様書の Markdown は、プロジェクト方針に従い、この spec の `spec.json.language` で設定した言語で書く。_
 
-### Test layers & scope
+### テストのレイヤーと範囲
 
-- Which layers apply: **unit** (Vitest + Testing Library / jsdom), **integration** (Vitest + real DB / node), **E2E** (Playwright), **Storybook** (visual catalog—no `expect` in play). Follow the **layer decision flow** in SKILL.md.
-- If E2E is included, state why Vitest cannot cover those paths (keep E2E minimal).
+- 対象レイヤー: **単体**（Vitest + Testing Library / jsdom）、**結合**（Vitest + 実 DB / node）、**E2E**（Playwright）、**Storybook**（見た目のカタログ—play に `expect` を書かない）。SKILL.md の **レイヤー判断フロー** に従う。
+- E2E を含める場合は、Vitest で代替できない理由を書く（E2E は最小限に）。
 
-_Checklist (adapt counts to complexity):_
+_チェックリスト（件数は複雑さに合わせて調整）:_
 
-- Unit: 3–5 behaviors (e.g., pure logic, client components, form validation)
-- Integration: 3–5 flows (e.g., Server Actions, data layer against real DB)
-- E2E (if applicable): 3–5 critical paths that require a browser (auth, navigation, async RSC)
-- Performance/load (if applicable): 3–4 items
+- 単体: 3〜5 件（例: 純粋ロジック、クライアントコンポーネント、フォーム検証）
+- 結合: 3〜5 件（例: Server Actions、実 DB に対するデータ層）
+- E2E（該当時）: 3〜5 件（ブラウザ必須のクリティカルパス: 認証、遷移、async RSC など）
+- 性能・負荷（該当時）: 3〜4 件
 
-### Observable outcomes
+### 観測可能な結果
 
-- Primary assertions: **observable results** (return values, DB state after actions, UI text/state, user-visible errors)—not internal structure. Align with **classical school verification** in SKILL.md.
+- アサーションの主眼は **観測可能な結果**（戻り値、操作後の DB 状態、UI の文言・状態、ユーザー向けエラー）とし、内部構造に固着しない。SKILL.md の **古典学派の検証観点** に沿う。
 
-### Dependencies & isolation
+### 依存関係と隔離
 
-- Short summary for this feature: e.g. real DB + sequential runs vs mocks; which **process-out** deps (`next/*`, auth) are mocked. For defaults and tables, defer to SKILL.md—note only exceptions here.
+- 本機能向けの要約（例: 実 DB + 順次実行 vs モック、**プロセス外** 依存 `next/*`・auth のうち何をモックするか）。既定と表は SKILL.md に任せ、ここでは例外のみ記載する。
 
-### Traceability (optional)
+### トレーサビリティ（任意）
 
-- Map requirement IDs to test layers, or point to the **Requirements Traceability** section above if already sufficient.
+- 要件 ID とテストレイヤーの対応を書くか、上の **Requirements Traceability** で足りていればそこを指す。
 
 ## Optional Sections (include when relevant)
 

@@ -1,10 +1,10 @@
 # Implementation Plan
 
-## TDD and task order
+## TDD とタスク順序
 
-- **Order**: Put a **test task immediately before** each implementation task that adds or changes verifiable behavior. **Exception**: tasks with no test target (schema-only, generated migrations, pure config) have **no** preceding test task.
-- **Per slice** (test task then implementation task): enumerate cases first (`it.todo()` or checklist)—**no assertions yet**—then for one case at a time: failing test → minimal code → refactor. The test list is a **plan**, not fixed spec; add or drop cases as you learn.
-- **Authoritative detail**: [`AGENTS.md`](../../../../AGENTS.md) (**TDD Workflow (Implementation Phase)**, **`/kiro/spec-tasks` rules**).
+- **順序**: 検証可能な振る舞いを追加・変更する実装タスクの **直前** に、対応する **テストタスク** を置く。**例外**: テスト対象がないタスク（スキーマ定義のみ、生成マイグレーションのみ、設定のみなど）には、その前にテストタスクを置かない。
+- **1 単位あたり**（テストタスク → 実装タスク）: 先にケースを列挙する（`it.todo()` またはチェックリスト）—**この段階ではアサーションは書かない**—そのうえで 1 ケースずつ、失敗するテスト → 最小の実装 → リファクタリング。テスト一覧は **計画** であり確定仕様ではない。学びに応じてケースを追加・削除する。
+- **詳細の正本**: [`AGENTS.md`](../../../../AGENTS.md)（**TDD Workflow (Implementation Phase)**、**`/kiro/spec-tasks` のルール**）。
 
 ## Task Format Template
 
