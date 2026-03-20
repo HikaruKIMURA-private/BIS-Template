@@ -141,6 +141,7 @@
 ### Error/Testing/Security/Performance Sections
 
 - Record only feature-specific decisions or deviations. Link or reference organization-wide standards (steering) for baseline practices instead of restating them.
+- **Testing Strategy** (in `design.md`): Follow the test policy in the repository root [`AGENTS.md`](../../../AGENTS.md). The design template’s **Testing Strategy** section is a placeholder—capture feature-specific scope and scenarios only; do not paste full doctrine from `AGENTS.md` into the spec.
 
 ### Diagram & Text Deduplication
 

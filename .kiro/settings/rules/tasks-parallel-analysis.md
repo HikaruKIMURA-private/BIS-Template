@@ -13,6 +13,8 @@ Only mark a task as parallel-capable when **all** of the following are true:
 3. **No prerequisite review/approval** from another task is required beforehand.
 4. **Environment/setup work** needed by this task is already satisfied or covered within the task itself.
 
+**TDD sequencing (see [`AGENTS.md`](../../../AGENTS.md))**: Do **not** treat as parallel-safe a **test** task and the **immediately following implementation** task for the **same** verifiable behavior—those run in order; do not mark both with `(P)` as a pair.
+
 ## Marking Convention
 
 - Append `(P)` immediately after the numeric identifier for each qualifying task.

@@ -1,5 +1,9 @@
 # Task Generation Rules
 
+## Compliance with project test policy
+
+Follow the repository root [`AGENTS.md`](../../../AGENTS.md) for test philosophy, TDD workflow, `/kiro/spec-tasks` ordering (place test tasks before related implementation tasks where applicable), and checkbox meaning. If **Optional Test Coverage Tasks** (below) conflicts with `AGENTS.md`, **prefer `AGENTS.md`**.
+
 ## Core Principles
 
 ### 1. Natural Language Descriptions

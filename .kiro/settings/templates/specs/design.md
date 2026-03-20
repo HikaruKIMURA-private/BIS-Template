@@ -276,35 +276,14 @@ Include Mermaid flowchart only for complex error scenarios with business workflo
 
 Error tracking, logging, and health monitoring implementation.
 
-## テスト戦略
+## Testing Strategy
 
-_実装フェーズ（`/kiro/spec-impl`）では **TDD** とする。哲学（4 つの柱、テストピラミッド、古典学派における「単体」= 1 振る舞い、依存・モックの考え方）は [`AGENTS.md`](../../../../AGENTS.md)（**Test Philosophy**、**TDD Workflow**）に記載する。ツール、ファイル命名（`*.test.ts` / `*.test.tsx` / `e2e`）、レイヤー判断フロー、モック早見表は [`.cursor/skills/nextjs-testing/SKILL.md`](../../../../.cursor/skills/nextjs-testing/SKILL.md) を参照する。本セクションは機能固有の決定のみに留め、教義の全文は貼らない。_
+### Default sections (adapt names/sections to fit the domain)
 
-_仕様書の Markdown は、プロジェクト方針に従い、この spec の `spec.json.language` で設定した言語で書く。_
-
-### テストのレイヤーと範囲
-
-- 対象レイヤー: **単体**（Vitest + Testing Library / jsdom）、**結合**（Vitest + 実 DB / node）、**E2E**（Playwright）、**Storybook**（見た目のカタログ—play に `expect` を書かない）。SKILL.md の **レイヤー判断フロー** に従う。
-- E2E を含める場合は、Vitest で代替できない理由を書く（E2E は最小限に）。
-
-_チェックリスト（件数は複雑さに合わせて調整）:_
-
-- 単体: 3〜5 件（例: 純粋ロジック、クライアントコンポーネント、フォーム検証）
-- 結合: 3〜5 件（例: Server Actions、実 DB に対するデータ層）
-- E2E（該当時）: 3〜5 件（ブラウザ必須のクリティカルパス: 認証、遷移、async RSC など）
-- 性能・負荷（該当時）: 3〜4 件
-
-### 観測可能な結果
-
-- アサーションの主眼は **観測可能な結果**（戻り値、操作後の DB 状態、UI の文言・状態、ユーザー向けエラー）とし、内部構造に固着しない。SKILL.md の **古典学派の検証観点** に沿う。
-
-### 依存関係と隔離
-
-- 本機能向けの要約（例: 実 DB + 順次実行 vs モック、**プロセス外** 依存 `next/*`・auth のうち何をモックするか）。既定と表は SKILL.md に任せ、ここでは例外のみ記載する。
-
-### トレーサビリティ（任意）
-
-- 要件 ID とテストレイヤーの対応を書くか、上の **Requirements Traceability** で足りていればそこを指す。
+- Unit Tests: 3–5 items from core functions/modules (e.g., auth methods, subscription logic)
+- Integration Tests: 3–5 cross-component flows (e.g., webhook handling, notifications)
+- E2E/UI Tests (if applicable): 3–5 critical user paths (e.g., forms, dashboards)
+- Performance/Load (if applicable): 3–4 items (e.g., concurrency, high-volume ops)
 
 ## Optional Sections (include when relevant)
 
