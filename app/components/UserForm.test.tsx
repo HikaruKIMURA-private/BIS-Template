@@ -111,6 +111,7 @@ describe("UserForm", () => {
           birthDate: "1990-01-15",
           note: null,
           bloodType: null,
+          avatarUrl: null,
         }}
       />
     );

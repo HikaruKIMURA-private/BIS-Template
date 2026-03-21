@@ -57,6 +57,7 @@ export const Editing: Story = {
       birthDate: "1990-01-15",
       note: "よろしくお願いします",
       bloodType: "A",
+      avatarUrl: null,
     },
   },
 };

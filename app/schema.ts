@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { parseAvatarFileForUpload } from "@/lib/avatar-validation";
+
 export const GENDER_OPTIONS = [
   { value: "male", label: "男性" },
   { value: "female", label: "女性" },
@@ -55,7 +57,25 @@ export type ProfileData = {
   birthDate: string;
   note: string | null;
   bloodType: string | null;
+  avatarUrl: string | null;
 };
+
+/** アバターアップロード（Conform + サーバーで共通） */
+export const avatarUploadFormSchema = z.object({
+  avatar: z
+    .custom<File>((v) => v instanceof File, {
+      message: "画像ファイルを選択してください",
+    })
+    .superRefine((file, ctx) => {
+      const r = parseAvatarFileForUpload(file);
+      if (!r.ok) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: r.error,
+        });
+      }
+    }),
+});
 
 export function toProfileRecord(data: ProfileFormData) {
   return {

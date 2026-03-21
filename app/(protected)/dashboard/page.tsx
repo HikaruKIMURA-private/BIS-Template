@@ -28,7 +28,14 @@ export default async function DashboardPage() {
         </p>
         <LogoutButton />
       </div>
-      {profileData ? <ProfileCard profile={profileData} /> : <UserForm />}
+      {profileData ? (
+        <ProfileCard
+          profile={profileData}
+          sessionFallbackImage={session.user.image}
+        />
+      ) : (
+        <UserForm />
+      )}
     </div>
   );
 }
