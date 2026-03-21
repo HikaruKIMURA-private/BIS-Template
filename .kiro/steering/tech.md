@@ -58,7 +58,7 @@ Next.js App Router ベースのフルスタックアプリケーション。Reac
 
 ```bash
 # Dev: pnpm dev
-# Build: pnpm build
+# Build: pnpm build（`drizzle-kit migrate` の後に `next build` を実行）
 # Test (unit/integration): pnpm test
 # E2E: pnpm e2e
 # Storybook (catalog only): pnpm storybook

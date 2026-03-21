@@ -270,4 +270,29 @@ describe("submitProfileForm", () => {
     expect(mockRevalidatePath).toHaveBeenCalledWith("/dashboard");
     expect(mockRedirect).toHaveBeenCalledWith("/dashboard");
   });
+
+  it("テキスト保存で avatar_url を上書きしない", async () => {
+    await seedTestUser();
+    await db.insert(profile).values({
+      id: "test-profile-avatar-preserve",
+      userId: TEST_USER_ID,
+      name: "旧名前",
+      gender: "female",
+      birthDate: "2000-06-01",
+      avatarUrl: "https://ex.test/storage/v1/object/public/bkt/u/preserved.png",
+    });
+    mockGetSession.mockResolvedValue({ user: { id: TEST_USER_ID } });
+
+    await expect(
+      submitProfileForm(undefined, createFormData(validFormData))
+    ).rejects.toThrow("NEXT_REDIRECT");
+
+    const rows = await db
+      .select()
+      .from(profile)
+      .where(eq(profile.userId, TEST_USER_ID));
+    expect(rows[0]?.avatarUrl).toBe(
+      "https://ex.test/storage/v1/object/public/bkt/u/preserved.png"
+    );
+  });
 });

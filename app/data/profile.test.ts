@@ -47,6 +47,38 @@ describe("getUserProfile", () => {
       birthDate: "1990-01-15",
       note: "テスト",
       bloodType: "A",
+      avatarUrl: null,
+      oauthImageUrl: null,
+    });
+  });
+
+  it("avatar_url と user.image を返す", async () => {
+    await db.insert(user).values({
+      id: TEST_USER_ID,
+      name: "テスト",
+      email: TEST_EMAIL,
+      emailVerified: false,
+      image: "https://avatars.example.com/oauth.png",
+    });
+    await db.insert(profile).values({
+      id: "test-profile-get-2",
+      userId: TEST_USER_ID,
+      name: "山田太郎",
+      gender: "male",
+      birthDate: "1990-01-15",
+      avatarUrl: "https://ex.test/storage/v1/object/public/bkt/u/a.png",
+    });
+
+    const result = await getUserProfile(TEST_USER_ID);
+
+    expect(result).toEqual({
+      name: "山田太郎",
+      gender: "male",
+      birthDate: "1990-01-15",
+      note: null,
+      bloodType: null,
+      avatarUrl: "https://ex.test/storage/v1/object/public/bkt/u/a.png",
+      oauthImageUrl: "https://avatars.example.com/oauth.png",
     });
   });
 

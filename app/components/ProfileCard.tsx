@@ -1,10 +1,68 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { type ProfileData, bloodTypeLabel, genderLabel } from "../schema";
 import { UserForm } from "./UserForm";
+
+function ProfileAvatarDisplay({
+  name,
+  avatarUrl,
+  oauthImageUrl,
+}: {
+  name: string;
+  avatarUrl: string | null;
+  oauthImageUrl: string | null;
+}) {
+  const initial = name.trim().charAt(0) || "?";
+  const src = avatarUrl ?? oauthImageUrl;
+  const [failed, setFailed] = useState(false);
+
+  if (!src || failed) {
+    return (
+      <div
+        className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-200 text-2xl font-semibold text-zinc-600 dark:bg-zinc-700 dark:text-zinc-200"
+        aria-hidden
+      >
+        {initial}
+      </div>
+    );
+  }
+
+  const isAppStorage = src.includes("/storage/v1/object/public/");
+
+  if (isAppStorage) {
+    return (
+      <div className="mb-6">
+        {/* unoptimized: ローカル Supabase 等で next/image の最適化パイプラインが失敗し onError になるのを防ぐ */}
+        <Image
+          src={src}
+          alt=""
+          width={80}
+          height={80}
+          unoptimized
+          className="h-20 w-20 rounded-full object-cover"
+          onError={() => setFailed(true)}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="mb-6">
+      <img
+        src={src}
+        alt=""
+        width={80}
+        height={80}
+        className="h-20 w-20 rounded-full object-cover"
+        onError={() => setFailed(true)}
+      />
+    </div>
+  );
+}
 
 export function ProfileCard({ profile }: { profile: ProfileData }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -25,6 +83,12 @@ export function ProfileCard({ profile }: { profile: ProfileData }) {
           編集
         </Button>
       </div>
+
+      <ProfileAvatarDisplay
+        name={profile.name}
+        avatarUrl={profile.avatarUrl}
+        oauthImageUrl={profile.oauthImageUrl}
+      />
 
       <dl className="space-y-4">
         <div>
