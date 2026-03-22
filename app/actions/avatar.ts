@@ -8,8 +8,8 @@ import { headers } from "next/headers";
 
 import { updateProfileAvatarUrl } from "@/app/data/profile";
 import { auth } from "@/auth";
-import { createSupabaseAdmin } from "@/lib/supabase-server";
-import { uploadAvatarToStorage } from "@/lib/upload-avatar-storage";
+import { createSupabaseAdmin } from "@/libs/storage/supabase-server";
+import { uploadAvatarToStorage } from "@/libs/storage/upload-avatar-storage";
 import { avatarUploadFormSchema } from "../schema";
 
 export type AvatarFormActionResult =

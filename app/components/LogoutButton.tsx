@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/libs/auth-client";
 
 export function LogoutButton() {
   const router = useRouter();

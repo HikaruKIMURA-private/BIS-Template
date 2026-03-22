@@ -4,7 +4,7 @@ import { nextCookies } from "better-auth/next-js";
 
 import { db } from "@/db";
 import * as schema from "@/db/schema";
-import { vercelOrigins } from "@/lib/base-url";
+import { vercelOrigins } from "@/libs/base-url";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {

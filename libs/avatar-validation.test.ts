@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   AVATAR_MAX_BYTES,
   parseAvatarFileForUpload,
-} from "@/lib/avatar-validation";
+} from "@/libs/avatar/avatar-validation";
 
 describe("parseAvatarFileForUpload", () => {
   it("ファイル未選択（size 0）のときエラー", () => {

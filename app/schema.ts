@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { parseAvatarFileForUpload } from "@/lib/avatar-validation";
+import { parseAvatarFileForUpload } from "@/libs/avatar/avatar-validation";
 
 export const GENDER_OPTIONS = [
   { value: "male", label: "男性" },

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { resolveAvatarImageUrl } from "@/lib/avatar-display";
+import { resolveAvatarImageUrl } from "@/libs/avatar/avatar-display";
 import { type ProfileData, bloodTypeLabel, genderLabel } from "../schema";
 import { AvatarUploadForm } from "./AvatarUploadForm";
 import { UserForm } from "./UserForm";
