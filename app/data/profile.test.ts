@@ -37,6 +37,7 @@ describe("getUserProfile", () => {
       birthDate: "1990-01-15",
       note: "テスト",
       bloodType: "A",
+      avatarUrl: null,
     });
 
     const result = await getUserProfile(TEST_USER_ID);
@@ -47,6 +48,7 @@ describe("getUserProfile", () => {
       birthDate: "1990-01-15",
       note: "テスト",
       bloodType: "A",
+      avatarUrl: null,
     });
   });
 
