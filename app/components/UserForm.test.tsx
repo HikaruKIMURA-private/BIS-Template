@@ -6,6 +6,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { UserForm } from "./UserForm";
 
+// プロフィール＋スキルシートのタブ編集・共通保存などは ProfileEditorTabs.test.tsx 側でコロケーションする
+
 vi.mock("../actions/profile", () => ({
   submitProfileForm: vi.fn(),
 }));
