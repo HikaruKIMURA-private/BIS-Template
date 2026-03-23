@@ -4,19 +4,25 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { submitProfileForm } from "@/app/actions/profile";
 import { resolveAvatarImageUrl } from "@/libs/avatar/avatar-display";
+import type { SkillSheetValues } from "@/libs/skill-sheet/skill-sheet-types";
 import { type ProfileData, bloodTypeLabel, genderLabel } from "../schema";
 import { AvatarUploadForm } from "./AvatarUploadForm";
+import { SkillSheetPreview } from "./SkillSheetPreview";
 import { UserForm } from "./UserForm";
 
 type ProfileCardProps = {
   profile: ProfileData;
+  /** 保存済みスキルシート（未保存時は null） */
+  skillSheet?: SkillSheetValues | null;
   /** OAuth 等で取得したユーザー画像（カスタムアバター未設定時のフォールバック） */
   sessionFallbackImage?: string | null;
 };
 
 export function ProfileCard({
   profile,
+  skillSheet = null,
   sessionFallbackImage = null,
 }: ProfileCardProps) {
   const [isEditing, setIsEditing] = useState(false);
@@ -31,6 +37,7 @@ export function ProfileCard({
       <div className="w-full max-w-md rounded-lg border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
         <AvatarUploadForm hasCustomAvatar={!!profile.avatarUrl} />
         <UserForm
+          action={submitProfileForm}
           defaultProfile={profile}
           onCancel={() => setIsEditing(false)}
         />
@@ -121,6 +128,8 @@ export function ProfileCard({
           </div>
         )}
       </dl>
+
+      <SkillSheetPreview skillSheet={skillSheet ?? null} />
     </div>
   );
 }

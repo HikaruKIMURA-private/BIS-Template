@@ -18,13 +18,22 @@ function getSupabaseDbContainer(): string {
 export async function setup() {
   const container = getSupabaseDbContainer();
 
+  // ローカルに残った別ブランチ由来のマイグレーション履歴と混ざらないよう、テスト専用 DB を毎回作り直す
   execSync(
-    `docker exec ${container} psql -U postgres -c "CREATE DATABASE postgres_test;" 2>/dev/null || true`,
+    `docker exec ${container} psql -U postgres -c "DROP DATABASE IF EXISTS postgres_test WITH (FORCE);"`,
+    { stdio: "pipe" }
+  );
+  execSync(
+    `docker exec ${container} psql -U postgres -c "CREATE DATABASE postgres_test;"`,
     { stdio: "pipe" }
   );
 
-  execSync(
-    "DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres_test pnpm db:migrate",
-    { stdio: "inherit" }
-  );
+  execSync("pnpm db:migrate", {
+    stdio: "inherit",
+    env: {
+      ...process.env,
+      DATABASE_URL:
+        "postgresql://postgres:postgres@127.0.0.1:54322/postgres_test",
+    },
+  });
 }

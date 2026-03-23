@@ -9,7 +9,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
-import { db } from "@/db";
+import { db, type DbExecutor } from "@/db";
 import { profile } from "@/db/schema";
 import {
   type ProfileFormData,
@@ -23,18 +23,19 @@ export type FormActionResult =
 
 export async function upsertProfile(
   userId: string,
-  record: ReturnType<typeof toProfileRecord>
+  record: ReturnType<typeof toProfileRecord>,
+  executor: DbExecutor = db
 ) {
-  const existingProfile = await db
+  const existingProfile = await executor
     .select()
     .from(profile)
     .where(eq(profile.userId, userId))
     .limit(1);
 
   if (existingProfile.length > 0) {
-    await db.update(profile).set(record).where(eq(profile.userId, userId));
+    await executor.update(profile).set(record).where(eq(profile.userId, userId));
   } else {
-    await db.insert(profile).values({
+    await executor.insert(profile).values({
       id: crypto.randomUUID(),
       userId,
       ...record,

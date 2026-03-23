@@ -1,6 +1,11 @@
 import { z } from "zod";
 
 import { parseAvatarFileForUpload } from "@/libs/avatar/avatar-validation";
+import {
+  careerArraySchema,
+  experienceYearsFieldSchema,
+  ownedSkillsFieldSchema,
+} from "@/libs/skill-sheet/skill-sheet-schema";
 
 export const GENDER_OPTIONS = [
   { value: "male", label: "男性" },
@@ -50,6 +55,51 @@ export const profileFormSchema = z.object({
 });
 
 export type ProfileFormData = z.infer<typeof profileFormSchema>;
+
+/** プロフィール編集とスキルシートを同一フォームで送信するときのスキーマ（経歴は careersJson で送る） */
+export const profileAndSkillSheetFormSchema = profileFormSchema
+  .merge(
+    z.object({
+      experienceYears: experienceYearsFieldSchema,
+      ownedSkills: ownedSkillsFieldSchema,
+      careersJson: z.string(),
+    })
+  )
+  .superRefine((data, ctx) => {
+    try {
+      const parsed: unknown = JSON.parse(data.careersJson);
+      const r = careerArraySchema.safeParse(parsed);
+      if (!r.success) {
+        for (const issue of r.error.issues) {
+          ctx.addIssue({
+            ...issue,
+            path: ["careersJson", ...issue.path],
+          });
+        }
+      }
+    } catch {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "経歴の形式が不正です",
+        path: ["careersJson"],
+      });
+    }
+  })
+  .transform((data) => {
+    const parsed: unknown = JSON.parse(data.careersJson);
+    const careers = careerArraySchema.parse(parsed);
+    const { careersJson, experienceYears, ownedSkills, ...profileFields } = data;
+    return {
+      ...profileFields,
+      experienceYears,
+      ownedSkills,
+      careers,
+    };
+  });
+
+export type ProfileAndSkillSheetFormData = z.infer<
+  typeof profileAndSkillSheetFormSchema
+>;
 
 export type ProfileData = {
   name: string;

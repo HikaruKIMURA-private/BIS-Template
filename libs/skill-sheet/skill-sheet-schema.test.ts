@@ -1,63 +1,199 @@
-import { describe, it } from "vitest";
+import { describe, expect, it } from "vitest";
+
+import {
+  MAX_CAREER_LINES,
+  MAX_EXPERIENCE_YEARS,
+  MAX_OWNED_SKILLS_LENGTH,
+} from "./skill-sheet-constants";
+import { skillSheetFormSchema } from "./skill-sheet-schema";
 
 /**
  * スキルシート入力の Zod 等（実装時のモジュール名に合わせてリネーム）に対する
- * 純粋バリデーションの振る舞い仕様。本文は it.todo のみ。
+ * 純粋バリデーションの振る舞い仕様。
  */
 describe("skillSheetFormSchema（仮称）", () => {
+  const baseCareer = {
+    startYear: 2020,
+    endYear: 2021,
+    projectName: "プロジェクトA",
+    summary: "概要",
+    skillsUsed: "TypeScript",
+  };
+
   describe("経験年数（0〜設定された上限の整数）", () => {
-    // 下限境界でパースに成功する契約を固定する
-    it.todo("経験年数が0のとき、パースに成功すること");
+    it("経験年数が0のとき、パースに成功すること", () => {
+      const r = skillSheetFormSchema.safeParse({
+        experienceYears: 0,
+        ownedSkills: "a",
+        careers: [],
+      });
 
-    // 上限境界でパースに成功する契約を固定する
-    it.todo("経験年数が設定された上限値のとき、パースに成功すること");
+      expect(r.success).toBe(true);
+    });
 
-    // 負の値を拒否する
-    it.todo("経験年数が負の整数のとき、エラーであること");
+    it("経験年数が設定された上限値のとき、パースに成功すること", () => {
+      const r = skillSheetFormSchema.safeParse({
+        experienceYears: MAX_EXPERIENCE_YEARS,
+        ownedSkills: "a",
+        careers: [],
+      });
 
-    // 上限を超える値を拒否する
-    it.todo("経験年数が設定された上限値より大きいとき、エラーであること");
+      expect(r.success).toBe(true);
+    });
 
-    // 整数以外を拒否する
-    it.todo("経験年数が小数のとき、エラーであること");
+    it("経験年数が負の整数のとき、エラーであること", () => {
+      const r = skillSheetFormSchema.safeParse({
+        experienceYears: -1,
+        ownedSkills: "a",
+        careers: [],
+      });
 
-    // 必須入力とする場合の契約（仕様で任意にする場合はこのケースを削除する）
-    it.todo("経験年数が未入力のとき、エラーであること");
+      expect(r.success).toBe(false);
+    });
+
+    it("経験年数が設定された上限値より大きいとき、エラーであること", () => {
+      const r = skillSheetFormSchema.safeParse({
+        experienceYears: MAX_EXPERIENCE_YEARS + 1,
+        ownedSkills: "a",
+        careers: [],
+      });
+
+      expect(r.success).toBe(false);
+    });
+
+    it("経験年数が小数のとき、エラーであること", () => {
+      const r = skillSheetFormSchema.safeParse({
+        experienceYears: 3.5,
+        ownedSkills: "a",
+        careers: [],
+      });
+
+      expect(r.success).toBe(false);
+    });
+
+    it("経験年数が未入力のとき、エラーであること", () => {
+      const r = skillSheetFormSchema.safeParse({
+        ownedSkills: "a",
+        careers: [],
+      });
+
+      expect(r.success).toBe(false);
+    });
   });
 
   describe("所有スキル（テキスト）", () => {
-    // 空文字を許容しない仕様のとき（許容する仕様なら「成功」ケースに差し替え）
-    it.todo("所有スキルが空文字のとき、エラーであること");
+    it("所有スキルが空文字のとき、エラーであること", () => {
+      const r = skillSheetFormSchema.safeParse({
+        experienceYears: 1,
+        ownedSkills: "",
+        careers: [],
+      });
 
-    // 空文字を許容する仕様のとき（不許可ならこのケースを削除する）
-    it.todo("所有スキルが空文字のとき、パースに成功すること");
+      expect(r.success).toBe(false);
+    });
 
-    // 最大長ちょうどは許容する
-    it.todo("所有スキルが最大文字数ちょうどのとき、パースに成功すること");
+    it.skip("所有スキルが空文字のとき、パースに成功すること", () => {
+      // 仕様: 所有スキルは必須（空文字不可）のため、成功ケースは対象外
+    });
 
-    // 最大長超過は拒否する
-    it.todo("所有スキルが最大文字数を1文字超過するとき、エラーであること");
+    it("所有スキルが最大文字数ちょうどのとき、パースに成功すること", () => {
+      const r = skillSheetFormSchema.safeParse({
+        experienceYears: 1,
+        ownedSkills: "a".repeat(MAX_OWNED_SKILLS_LENGTH),
+        careers: [],
+      });
+
+      expect(r.success).toBe(true);
+    });
+
+    it("所有スキルが最大文字数を1文字超過するとき、エラーであること", () => {
+      const r = skillSheetFormSchema.safeParse({
+        experienceYears: 1,
+        ownedSkills: "a".repeat(MAX_OWNED_SKILLS_LENGTH + 1),
+        careers: [],
+      });
+
+      expect(r.success).toBe(false);
+    });
   });
 
   describe("経歴行（期間・プロジェクト名・概要・使用スキル）", () => {
-    // 経歴0行を許容する仕様のとき（必須なら「エラー」ケースに差し替え）
-    it.todo("経歴が0行のとき、パースに成功すること");
+    it("経歴が0行のとき、パースに成功すること", () => {
+      const r = skillSheetFormSchema.safeParse({
+        experienceYears: 1,
+        ownedSkills: "a",
+        careers: [],
+      });
 
-    // 経歴を1行以上必須とする仕様のとき（任意ならこのケースを削除する）
-    it.todo("経歴が0行のとき、エラーであること");
+      expect(r.success).toBe(true);
+    });
 
-    // 同年の期間を許容する
-    it.todo("各行で開始年と終了年が同じ年のとき、パースに成功すること");
+    it.skip("経歴が0行のとき、エラーであること", () => {
+      // 仕様: 経歴0行を許容するため、エラーケースは対象外
+    });
 
-    // 期間の論理順序を保証する
-    it.todo("開始年が終了年より後の年であるとき、エラーであること");
+    it("各行で開始年と終了年が同じ年のとき、パースに成功すること", () => {
+      const r = skillSheetFormSchema.safeParse({
+        experienceYears: 1,
+        ownedSkills: "a",
+        careers: [{ ...baseCareer, startYear: 2022, endYear: 2022 }],
+      });
 
-    // 必須フィールドの空を拒否する（必須項目は実装で確定させる）
-    it.todo("必須フィールドのいずれかが空である行があるとき、エラーであること");
+      expect(r.success).toBe(true);
+    });
 
-    // 可変行の上限境界
-    it.todo("経歴行が最大件数ちょうどのとき、パースに成功すること");
+    it("開始年が終了年より後の年であるとき、エラーであること", () => {
+      const r = skillSheetFormSchema.safeParse({
+        experienceYears: 1,
+        ownedSkills: "a",
+        careers: [{ ...baseCareer, startYear: 2023, endYear: 2022 }],
+      });
 
-    it.todo("経歴行が最大件数を超えるとき、エラーであること");
+      expect(r.success).toBe(false);
+    });
+
+    it("必須フィールドのいずれかが空である行があるとき、エラーであること", () => {
+      const r = skillSheetFormSchema.safeParse({
+        experienceYears: 1,
+        ownedSkills: "a",
+        careers: [
+          {
+            startYear: 2020,
+            endYear: 2021,
+            projectName: "",
+            summary: "x",
+            skillsUsed: "y",
+          },
+        ],
+      });
+
+      expect(r.success).toBe(false);
+    });
+
+    it("経歴行が最大件数ちょうどのとき、パースに成功すること", () => {
+      const line = { ...baseCareer };
+      const careers = Array.from({ length: MAX_CAREER_LINES }, () => ({ ...line }));
+      const r = skillSheetFormSchema.safeParse({
+        experienceYears: 1,
+        ownedSkills: "a",
+        careers,
+      });
+
+      expect(r.success).toBe(true);
+    });
+
+    it("経歴行が最大件数を超えるとき、エラーであること", () => {
+      const line = { ...baseCareer };
+      const careers = Array.from({ length: MAX_CAREER_LINES + 1 }, () => ({
+        ...line,
+      }));
+      const r = skillSheetFormSchema.safeParse({
+        experienceYears: 1,
+        ownedSkills: "a",
+        careers,
+      });
+
+      expect(r.success).toBe(false);
+    });
   });
 });
