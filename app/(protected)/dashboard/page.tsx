@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { getUserProfile } from "@/app/data/profile";
+import { getSkillSheet } from "@/app/data/skill-sheet";
 import { auth } from "@/auth";
 import { LogoutButton } from "../../components/LogoutButton";
 import { ProfileCard } from "../../components/ProfileCard";
@@ -18,6 +19,7 @@ export default async function DashboardPage() {
   }
 
   const profileData = await getUserProfile(session.user.id);
+  const skillSheet = await getSkillSheet(session.user.id);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -31,6 +33,7 @@ export default async function DashboardPage() {
       {profileData ? (
         <ProfileCard
           profile={profileData}
+          skillSheet={skillSheet}
           sessionFallbackImage={session.user.image}
         />
       ) : (

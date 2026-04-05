@@ -3,10 +3,14 @@ import {
   boolean,
   date,
   index,
+  integer,
+  jsonb,
   pgTable,
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
+
+import type { SkillCareerLine } from "@/libs/skill-sheet/skill-sheet-types";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -80,6 +84,26 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)]
 );
 
+export const skillSheet = pgTable(
+  "skill_sheet",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" })
+      .unique(),
+    experienceYears: integer("experience_years").notNull(),
+    ownedSkills: text("owned_skills").notNull(),
+    careers: jsonb("careers").$type<SkillCareerLine[]>().notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [index("skill_sheet_userId_idx").on(table.userId)]
+);
+
 export const profile = pgTable(
   "profile",
   {
@@ -107,6 +131,7 @@ export const userRelations = relations(user, ({ many, one }) => ({
   sessions: many(session),
   accounts: many(account),
   profile: one(profile),
+  skillSheet: one(skillSheet),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -126,6 +151,13 @@ export const accountRelations = relations(account, ({ one }) => ({
 export const profileRelations = relations(profile, ({ one }) => ({
   user: one(user, {
     fields: [profile.userId],
+    references: [user.id],
+  }),
+}));
+
+export const skillSheetRelations = relations(skillSheet, ({ one }) => ({
+  user: one(user, {
+    fields: [skillSheet.userId],
     references: [user.id],
   }),
 }));
